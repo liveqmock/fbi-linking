@@ -64,19 +64,19 @@ public class Txn1533002Action extends AbstractTxnAction {
             info.setSkrzh(StringUtils.isEmpty(fieldArray[17]) ? sysCtl.getCbsActno() : fieldArray[17]);                     // 收款人账号
             info.setLxskbz(StringUtils.isEmpty(fieldArray[22]) ? "0" : fieldArray[22]);                    // 离线收款标志
             info.setYhskrq(fieldArray[24]);
-            // 更新为主机记账
             info.setYhwdbm(msg.branchID);                      // 网点号码
             info.setOperid(msg.tellerID);                      // 柜员
             info.setCbsActSerial(msg.serialNo);
-            if (!StringUtils.isEmpty(fieldArray[34])) {
+
+            info.setHostBookFlag("1");                          // 默认主机记账
+
+            if (!StringUtils.isEmpty(fieldArray[34]) && !"0.00".equals(fieldArray[34])) {
                 info.setBmkywxh(fieldArray[34]);                   // 不明款业务序号
                 info.setPendingFlag("3");                          // 不明款直接补票
                 info.setHostBookFlag("0");
             }
             if ("06".equals(fieldArray[4])) {         // POS缴款方式
                 info.setHostBookFlag("0");             // 主机不记账
-            } else {
-                info.setHostBookFlag("1");
             }
             info.setByzd1(fieldArray[35]);
             info.setByzd2(fieldArray[36]);         // pos 终端号
@@ -114,6 +114,10 @@ public class Txn1533002Action extends AbstractTxnAction {
             info.setBgrmc(fieldArray[28]);                       // 被告人
             info.setAy(fieldArray[29]);                       // 案由
             info.setAh(fieldArray[30]);                       // 案号
+            fieldArray[31] = "0.00".equals(fieldArray[31]) ? "" : fieldArray[31];
+            fieldArray[32] = "0.00".equals(fieldArray[32]) ? "" : fieldArray[32];
+            fieldArray[33] = "0.00".equals(fieldArray[33]) ? "" : fieldArray[33];
+            fieldArray[34] = "0.00".equals(fieldArray[34]) ? "" : fieldArray[34];
             info.setZdjh(fieldArray[31]);                       // 字第几号
             info.setBde(fieldArray[32]);                       // 标的额
             info.setXzspdtwym(fieldArray[33]);                 // 行政审批大厅唯一码
@@ -164,6 +168,8 @@ public class Txn1533002Action extends AbstractTxnAction {
                         item.setYskmbm(rtnmsg[4]);
                         item.setYskmmc(rtnmsg[5]);
                         item.setSjbz(rtnmsg[7]);
+                    } else {
+                        // TODO
                     }
                 }
                 items.add(item);
