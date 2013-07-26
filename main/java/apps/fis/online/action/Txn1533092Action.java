@@ -92,6 +92,7 @@ public class Txn1533092Action extends AbstractTxnAction {
                 sysCtl.setPosChkSts("1");
             } else {
                 msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
+                msg.msgBody = "POS∂‘’À≥…π¶".getBytes();
                 sysCtl.setPosChkSts("0");
             }
         } else {
