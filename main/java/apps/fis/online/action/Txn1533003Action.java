@@ -190,6 +190,7 @@ public class Txn1533003Action extends AbstractTxnAction {
                     fsqdfChkVchService.insert(vch);
                 }
                 fsqdfPaymentService.updatePaymentInfosToChkact(infos, msg.txnTime.substring(0, 8));
+                msg.msgBody = "对账成功".getBytes();
             } else {
                 sysCtl.setWsysChkSts("1");
                 // 更新为已对账 (无论对账结果是否平账)，可重复对账
