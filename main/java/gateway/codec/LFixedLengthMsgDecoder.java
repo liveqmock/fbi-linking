@@ -30,9 +30,6 @@ public class LFixedLengthMsgDecoder extends FrameDecoder {
         }
         if (buffer.readableBytes() < dataLength) {
             logger.info("[可接收报文长度不足，重复接收中...]readableBytes():" + buffer.readableBytes());
-            byte[] msgBytes = new byte[buffer.readableBytes()];
-            buffer.readBytes(msgBytes);
-            logger.info(new String(msgBytes));
             return null;
         }
 
