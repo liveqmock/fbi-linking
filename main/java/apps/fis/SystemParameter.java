@@ -14,6 +14,7 @@ public class SystemParameter {
     public static final String SERVER_SOCKET_IP = PropertyManager.getProperty("server.fis.socket.ip");
     public static final int SERVER_SOCKET_PORT = PropertyManager.getIntProperty("server.fis.socket.port");
     public static final int SERVER_TIMEOUT = PropertyManager.getIntProperty("server.fis.socket.timeout");
+    public static final int CHKACT_FIS_SOCKET_TIMEOUT = PropertyManager.getIntProperty("chkact.fis.socket.timeout");
     public static final String SERVER_FTP_IP = PropertyManager.getProperty("server.fis.ftp.ip");
     public static final String SERVER_FTP_USERID = PropertyManager.getProperty("ftp.dept.userid");
     public static final String SERVER_FTP_PASSWORD = PropertyManager.getProperty("ftp.dept.password");

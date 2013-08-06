@@ -39,6 +39,19 @@ public class DataExchangeService {
         }
     }
 
+    public Toa process(Tia tia, int timeout) {
+        try {
+            return client.execute(tia, timeout);
+        } catch (Exception e) {
+            if (e.getMessage() == null) {
+                logger.error(TxnRtnCode.MSG_SEND_ERROR.toRtnMsg(), e);
+                throw new RuntimeException(TxnRtnCode.MSG_SEND_ERROR.toRtnMsg());
+            } else {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+
     public String getFtpfileData(String fileName) throws IOException {
         FtpClient ftpClient = new FtpClient(SystemParameter.SERVER_FTP_IP, SystemParameter.SERVER_FTP_USERID, SystemParameter.SERVER_FTP_PASSWORD);
         String data = ftpClient.readFile(null, fileName);

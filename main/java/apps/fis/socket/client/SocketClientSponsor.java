@@ -33,9 +33,30 @@ public class SocketClientSponsor {
             Toa toa = ToaUnzipBase64Decoder.decode(resBytes);
             return toa;
         } finally {
-             if(os != null) {
-                 os.close();
-             }
+            if (os != null) {
+                os.close();
+            }
         }
     }
+
+    public Toa execute(Tia tia, int timeout) throws Exception {
+        OutputStream os = null;
+        try {
+            byte[] reqBytes = TiaBase64ZipEncoder.encode(tia);
+            Socket socket = new Socket(SystemParameter.SERVER_SOCKET_IP, SystemParameter.SERVER_SOCKET_PORT);
+            socket.setSoTimeout(timeout);
+            os = socket.getOutputStream();
+            os.write(reqBytes);
+            os.flush();
+            InputStream is = socket.getInputStream();
+            byte[] resBytes = ToaUnzipBase64Decoder.readBytesFromInputStream(is);
+            Toa toa = ToaUnzipBase64Decoder.decode(resBytes);
+            return toa;
+        } finally {
+            if (os != null) {
+                os.close();
+            }
+        }
+    }
+
 }

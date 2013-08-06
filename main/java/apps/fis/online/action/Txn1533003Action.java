@@ -181,7 +181,7 @@ public class Txn1533003Action extends AbstractTxnAction {
         if (uploadLocalFileData(SystemParameter.LOCAL_FTP_FILE_PATH, fileName, chkFileData)) {
             Tia3003 tia3003 = new Tia3003();
             tia3003.BODY.DATA.DZWJM = fileName;
-            Toa3003 toa3003 = (Toa3003) dataExchangeService.process(tia3003);
+            Toa3003 toa3003 = (Toa3003) dataExchangeService.process(tia3003, SystemParameter.CHKACT_FIS_SOCKET_TIMEOUT);
             if ("0".equals(toa3003.HEAD.STATUS)) {
                 sysCtl.setWsysChkSts("0");
                 // 更新为已对账
