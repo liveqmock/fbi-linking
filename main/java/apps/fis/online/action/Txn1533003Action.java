@@ -100,11 +100,12 @@ public class Txn1533003Action extends AbstractTxnAction {
         }
 
         FsQdfSysCtl sysCtl = fsqdfSysCtlService.getFsQdfSysCtl("1");
-        if (sysCtl.getTxnDate().compareTo(chkActDate) > 0) {
+
+        /*if (sysCtl.getTxnDate().compareTo(chkActDate) > 0) {
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
             msg.msgBody = TxnRtnCode.TXN_RECHKACT_NOT_ALLOWED.getTitle().getBytes();
             return msg;
-        }
+        }*/
         // 查询待补票确认状态,报表用
         List<FsQdfPendingVchInfo> pendingVchInfos = pendingVchinfoService.qryPendingVchInfos(PendingVchFlag.NOT_CONFIRM);
         for (FsQdfPendingVchInfo pendingVch : pendingVchInfos) {

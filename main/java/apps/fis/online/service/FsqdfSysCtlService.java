@@ -1,9 +1,7 @@
 package apps.fis.online.service;
 
 import apps.fis.SystemParameter;
-import apps.fis.repository.dao.FsQdfShareInfoMapper;
 import apps.fis.repository.dao.FsQdfSysCtlMapper;
-import apps.fis.repository.model.FsQdfShareInfo;
 import apps.fis.repository.model.FsQdfSysCtl;
 import apps.fis.repository.model.FsQdfSysCtlExample;
 import org.slf4j.Logger;

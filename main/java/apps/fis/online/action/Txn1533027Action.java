@@ -51,7 +51,8 @@ public class Txn1533027Action extends AbstractTxnAction {
             logger.info("[待补票开票申请反馈文件]" + toa3027.BODY.DATA.BPXXWJM);
             String fileData = dataExchangeService.getFtpfileData(toa3027.BODY.DATA.BPXXWJM);
             logger.info("[待补票开票信息文件内容]" + fileData);
-            int cnt = assembleAndSavePayments(sysCtl.getTxnDate(), tia3027.BODY.DATA.SQRQ, fileData);
+            int cnt = assembleAndSavePayments(tia3027.BODY.DATA.SQRQ, tia3027.BODY.DATA.SQRQ, fileData);
+//            int cnt = assembleAndSavePayments(sysCtl.getTxnDate(), tia3027.BODY.DATA.SQRQ, fileData);
             // 响应
             fileData.substring(0, fileData.length() - 1);
             fileData.replace("|||", ",");

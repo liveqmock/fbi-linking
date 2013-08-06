@@ -1,11 +1,8 @@
 package apps.fis.online.service;
 
 import apps.fis.repository.dao.FsQdfChkVchMapper;
-import apps.fis.repository.dao.FsQdfSysCtlMapper;
 import apps.fis.repository.model.FsQdfChkVch;
 import apps.fis.repository.model.FsQdfChkVchExample;
-import apps.fis.repository.model.FsQdfSysCtl;
-import apps.fis.repository.model.FsQdfSysCtlExample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

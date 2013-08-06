@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 // 缴款书缴款
@@ -189,7 +191,13 @@ public class Txn1533002Action extends AbstractTxnAction {
             // 本次交易缴款成功
             info.setQdfBookFlag("1");
             info.setQdfChkFlag("0");
-            info.setChkActDt(sysCtl.getTxnDate());             // 对账基准日期
+            // 20130806 by zhang
+            String sysdate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            if(StringUtils.isEmpty(msg.txnTime) || !msg.txnTime.substring(0, 8).equals(sysdate)) {
+               logger.error("特色平台交易日期：" + msg.txnTime + " linking系统日期：" + sysdate);
+            }
+            info.setChkActDt(sysdate);             // 对账基准日期
+//            info.setChkActDt(sysCtl.getTxnDate());             // 对账基准日期
             if (existInDB) {
                 fsqdfPaymentService.updatePaymentInfo(info);
             } else {

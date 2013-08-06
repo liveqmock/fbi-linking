@@ -71,7 +71,8 @@ public class Txn1533051Action extends AbstractTxnAction {
                     logger.info("[待补票开票申请反馈文件]" + toa3027.BODY.DATA.BPXXWJM);
                     String fileData = dataExchangeService.getFtpfileData(toa3027.BODY.DATA.BPXXWJM);
                     logger.info("[待补票开票信息文件内容]" + fileData);
-                    int rtncnt = assembleAndSavePayments(sysCtl.getTxnDate(), tia3027.BODY.DATA.SQRQ, fileData);
+                    int rtncnt = assembleAndSavePayments(tia3027.BODY.DATA.SQRQ, tia3027.BODY.DATA.SQRQ, fileData);
+//                    int rtncnt = assembleAndSavePayments(sysCtl.getTxnDate(), tia3027.BODY.DATA.SQRQ, fileData);
                     logger.info("获取到" + rtncnt + "笔补票作废后所补新票！");
                 } else {
                     logger.error("[查询作废待补票后，获取新票信息异常。]" + toa3027.HEAD.ERRCODE + toa3027.HEAD.MESSAGE);
