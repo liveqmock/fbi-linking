@@ -193,10 +193,13 @@ public class Txn1533002Action extends AbstractTxnAction {
             info.setQdfChkFlag("0");
             // 20130806 by zhang
             String sysdate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-            if(StringUtils.isEmpty(msg.txnTime) || !msg.txnTime.substring(0, 8).equals(sysdate)) {
-               logger.error("特色平台交易日期：" + msg.txnTime + " linking系统日期：" + sysdate);
+            if (StringUtils.isEmpty(msg.txnTime) || msg.txnTime.length() < 8 || !msg.txnTime.substring(0, 8).equals(sysdate)) {
+                logger.error("特色平台交易日期：" + msg.txnTime + " linking系统日期：" + sysdate);
+                info.setChkActDt(sysdate);                     // 对账基准日期
+            } else {
+                info.setChkActDt(msg.txnTime.substring(0, 8)); // 对账基准日期
             }
-            info.setChkActDt(sysdate);             // 对账基准日期
+
 //            info.setChkActDt(sysCtl.getTxnDate());             // 对账基准日期
             if (existInDB) {
                 fsqdfPaymentService.updatePaymentInfo(info);
