@@ -63,8 +63,8 @@
             <!--<property name="ignoreQualifiersAtRuntime" value="true"/>-->
             <!--<generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>-->
         <!--</table>-->
-        <table schema="fis" tableName="fs_qdf_sys_ctl">
-            <property name="ignoreQualifiersAtRuntime" value="true"/>
-        </table>
+
+
+
     </context>
 </generatorConfiguration>

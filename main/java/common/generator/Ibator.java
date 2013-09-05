@@ -22,7 +22,7 @@ public class Ibator {
     public static void main(String[] argv) {
         Ibator ibator = new Ibator();
 
-        ibator.run("resources/fis_generatorConfig.xml");
+        ibator.run("resources/fisjiaozhou_generatorConfig.xml");
 
     }
 
