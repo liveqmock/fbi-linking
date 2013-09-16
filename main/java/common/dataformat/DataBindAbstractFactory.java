@@ -9,8 +9,7 @@ import java.util.*;
 
 /**
  * User: zhanrui
- * Date: 13-9-4
- * Time: ÉÏÎç9:40
+ * Date: 13-9-7
  */
 public abstract class DataBindAbstractFactory implements DataBindFactory {
     private static final transient Logger logger = LoggerFactory.getLogger(DataBindAbstractFactory.class);
@@ -18,11 +17,12 @@ public abstract class DataBindAbstractFactory implements DataBindFactory {
     protected final Map<String, List<Field>> annotatedLinkFields = new LinkedHashMap<String, List<Field>>();
     protected Set<Class<?>> models;
 
+    private AnnotationModelLoader modelsLoader;
     private String[] packageNames;
-    private String locale;
 
     public DataBindAbstractFactory(String... packageNames) throws Exception {
         this.packageNames = packageNames;
+        this.modelsLoader = new AnnotationModelLoader();
 
         if (logger.isDebugEnabled()) {
             for (String str : this.packageNames) {
@@ -38,14 +38,12 @@ public abstract class DataBindAbstractFactory implements DataBindFactory {
     }
 
     private void initModelClasses(String... packageNames) throws Exception {
-        //models = modelsLoader.loadModels(packageNames);
+        models = modelsLoader.loadModels(packageNames);
     }
 
-    public abstract void initAnnotatedFields() throws Exception;
-
-    public abstract void bind(List<String> data, Map<String, Object> model, int line) throws Exception;
-    
-    public abstract String unbind(Map<String, Object> model) throws Exception;
+//    public abstract void initAnnotatedFields() throws Exception;
+//    public abstract void bind(List<String> data, Map<String, Object> model, int line) throws Exception;
+//    public abstract String unbind(Map<String, Object> model) throws Exception;
 
     public void link(Map<String, Object> model) throws Exception {
         for (String link : annotatedLinkFields.keySet()) {
@@ -135,11 +133,16 @@ public abstract class DataBindAbstractFactory implements DataBindFactory {
         return strValue;
     }
 
-    public String getLocale() {
-        return locale;
+    public static char getCharDelimitor(String separator) {
+        if (separator.equals("\\u0001")) {
+            return '\u0001';
+        } else if (separator.equals("\\t") || separator.equals("\\u0009")) {
+            return '\u0009';
+        } else if (separator.length() > 1) {
+            return separator.charAt(separator.length() - 1);
+        } else {
+            return separator.charAt(0);
+        }
     }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
 }
