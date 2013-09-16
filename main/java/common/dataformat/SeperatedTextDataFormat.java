@@ -30,6 +30,11 @@ public class SeperatedTextDataFormat extends DataBindAbstractDataFormat {
         return factory.unbind(modelsMap);
     }
 
+    public Object fromMessage(Object req, String requestBeanName) throws Exception {
+        String packageName = getPackages()[0];
+        return ((Map)fromMessage(req)).get(packageName + "." + requestBeanName);
+    }
+
     public Object fromMessage(Object req) throws Exception {
         SeperatedTextDataBindFactory factory = (SeperatedTextDataBindFactory)getFactory();
         Map<String, Object> modelMap = factory.factory();
