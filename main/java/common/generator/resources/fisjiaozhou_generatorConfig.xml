@@ -18,22 +18,23 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="apps.fis.repository.model" targetProject="main/java">
+        <javaModelGenerator targetPackage="apps.fisjz.repository.model" targetProject="main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="apps.fis.repository.mapper" targetProject="main/java">
+        <sqlMapGenerator targetPackage="apps.fisjz.repository.mapper" targetProject="main/java">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="apps.fis.repository.dao"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="apps.fisjz.repository.dao"
                              targetProject="main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
 
         <!--胶州非税 -->
+        <!--
         <table schema="fis" tableName="fs_jzf_payment_info">
             <property name="ignoreQualifiersAtRuntime" value="true"/>
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
@@ -46,10 +47,22 @@
             <property name="ignoreQualifiersAtRuntime" value="true"/>
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
-        <table schema="fis" tableName="fs_jzf_base_bank" />
-        <table schema="fis" tableName="fs_jzf_base_bdgagency" />
-        <table schema="fis" tableName="fs_jzf_base_func" />
-        <table schema="fis" tableName="fs_jzf_base_nontax" />
-        <table schema="fis" tableName="fs_jzf_base_storageid" />
+        <table schema="fis" tableName="fs_jzf_base_bank">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+        </table>
+
+        <table schema="fis" tableName="fs_jzf_base_bdgagency">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+        </table>
+        <table schema="fis" tableName="fs_jzf_base_func">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+        </table>
+        <table schema="fis" tableName="fs_jzf_base_nontax">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+        </table>
+        <table schema="fis" tableName="fs_jzf_base_storageid">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+        </table>
+    -->
     </context>
 </generatorConfiguration>
