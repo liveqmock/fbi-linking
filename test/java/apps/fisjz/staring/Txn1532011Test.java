@@ -23,7 +23,8 @@ public class Txn1532011Test {
             t.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             t.serialNo = "SPDB" + t.txnTime;
 
-            t.msgBody = ("2013" +
+
+            t.msgBody = ("|2013" +
                     "|CZBM" +
                     "|BANKNUM" +
                     "|BILLID" +
@@ -42,7 +43,9 @@ public class Txn1532011Test {
                     "|BILLTYPE" +
                     "|LATEFEE" +
                     "|BANKNOTESCODE" +
-                    "").getBytes();
+                    "|").getBytes();
+
+//            t.msgBody = ("|1|2|3|5300013092076|2013000000002|130000010002|VPR955|52000|00000022||||20130923|20130923|1|0|0|0.00||").getBytes();
 
             System.out.println("·¢ËÍ±¨ÎÄ£º" + new String(t.toByteArray()));
             //Socket socket = new Socket("10.22.0.45", 60001);

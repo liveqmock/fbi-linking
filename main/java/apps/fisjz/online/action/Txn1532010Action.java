@@ -39,8 +39,11 @@ public class Txn1532010Action extends AbstractTxnAction {
         //与第三方机构通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
         List rtnlist = service.queryNontaxPayment("","","","","","","");
-        logger.debug("===" + rtnlist);
 
+        //判断响应报文
+        if (!getResponseResult(rtnlist)) {
+            throw  new RuntimeException(getResponseErrMsg(rtnlist));
+        }
 
         //组响应报文
         TOA2010 toa = new TOA2010();
@@ -51,7 +54,7 @@ public class Txn1532010Action extends AbstractTxnAction {
 
         List<TOA2010PaynotesItem> paynotesItems = new ArrayList<TOA2010PaynotesItem>();
 
-        //TODO 判断响应报文 success
+
         List details = (List)responseContentMap.get("details");
         for (Object detail : details) {
             TOA2010PaynotesItem item = new TOA2010PaynotesItem();
