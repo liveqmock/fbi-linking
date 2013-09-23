@@ -11,8 +11,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface SeperatedTextMessage {
-    String separator() default "\\|";
+public @interface OneToManySeperatedTextMessage {
+    String separator() default ",";
     String quote() default "";
-    boolean mainClass() default false;
 }

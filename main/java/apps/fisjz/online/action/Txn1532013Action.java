@@ -1,8 +1,8 @@
 package apps.fisjz.online.action;
 
 import apps.fisjz.domain.financebureau.FbPaynotesInfo;
-import apps.fisjz.domain.staring.T2011Request.TIA2011;
 import apps.fisjz.domain.staring.T2011Response.TOA2011;
+import apps.fisjz.domain.staring.T2013Request.TIA2013;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 1532011缴款书缴款
+ * 1532013 手工缴款书缴款
  * zhanrui  20130923
  */
 @Component
-public class Txn1532011Action extends AbstractTxnAction {
-    private static Logger logger = LoggerFactory.getLogger(Txn1532011Action.class);
+public class Txn1532013Action extends AbstractTxnAction {
+    private static Logger logger = LoggerFactory.getLogger(Txn1532013Action.class);
 
     @Autowired
     private PaymentService paymentService;
@@ -34,10 +34,10 @@ public class Txn1532011Action extends AbstractTxnAction {
     @Override
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
         // 解析报文体
-        SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2011Request");
-        TIA2011 tia = (TIA2011)dataFormat.fromMessage(new String(msg.msgBody), "TIA2011");
+        SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2013Request");
+        TIA2013 tia = (TIA2013)dataFormat.fromMessage(new String(msg.msgBody), "TIA2013");
 
-        logger.info("[1532011缴款书缴款] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 缴款书编号:" + tia.getPaynotesInfo().getNotescode());
+        logger.info("[1532013缴款书缴款] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 缴款书编号:" + tia.getPaynotesInfo().getNotescode());
 
         //与第三方机构通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
@@ -46,8 +46,8 @@ public class Txn1532011Action extends AbstractTxnAction {
         FbPaynotesInfo fbPaynotesInfo = new FbPaynotesInfo();
         BeanUtils.copyProperties(fbPaynotesInfo, tia.getPaynotesInfo());
         paramList.add(fbPaynotesInfo);
-        List rtnlist = service.updateNontaxPayment("appid", "bank", "" + 2013, "", paramList);
-        logger.info("[1532011缴款书缴款] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
+        List rtnlist = service.insertNontaxPayment("appid", "bank", "" + 2013, "", paramList);
+        logger.info("[1532013缴款书缴款] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
 
         Map responseMap = (Map) rtnlist.get(0);
         String rtnResult = (String)responseMap.get("RESULT");

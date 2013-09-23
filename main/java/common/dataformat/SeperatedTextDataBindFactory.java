@@ -1,9 +1,6 @@
 package common.dataformat;
 
-import common.dataformat.annotation.DataField;
-import common.dataformat.annotation.Link;
-import common.dataformat.annotation.OneToMany;
-import common.dataformat.annotation.SeperatedTextMessage;
+import common.dataformat.annotation.*;
 import common.dataformat.format.FormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,17 +77,20 @@ public class SeperatedTextDataBindFactory extends DataBindAbstractFactory implem
             field.setAccessible(true);
             DataField dataField = field.getAnnotation(DataField.class);
             if (dataField != null) {
+/*
                 String data = tokens.get(dataField.seq() - 1);
                 if (dataField.trim()) {
                     data = data.trim();
                 }
+*/
 
                 OneToMany oneToMany = field.getAnnotation(OneToMany.class);
                 if (oneToMany == null) { //普通DataField域
                     if (model == null) { //OneToMany的情况
-                        SeperatedTextMessage seperatedTextMessage = (SeperatedTextMessage) clazz.getAnnotation(SeperatedTextMessage.class);
+                        //SeperatedTextMessage seperatedTextMessage = (SeperatedTextMessage) clazz.getAnnotation(SeperatedTextMessage.class);
+                        OneToManySeperatedTextMessage seperatedTextMessage = (OneToManySeperatedTextMessage) clazz.getAnnotation(OneToManySeperatedTextMessage.class);
                         if (seperatedTextMessage == null) {
-                            throw new RuntimeException("SeperatedTextMessage not defined!");
+                            throw new RuntimeException("OntToManySeperatedTextMessage not defined!");
                         }
                         String oneToManySeparator = seperatedTextMessage.separator();
                         List<Object> oneToManyModels = oneToManyModelMap.get(clazz.getName());
@@ -113,13 +113,13 @@ public class SeperatedTextDataBindFactory extends DataBindAbstractFactory implem
 
                             Format<?> format = FormatFactory.getFormat(field.getType(), pattern, dataField.precision());
                             Object value = null;
-                            if (!data.equals("")) {
+                            if (!colValue.equals("")) {
                                 try {
                                     value = format.parse(colValue);
                                 } catch (FormatException fe) {
-                                    throw new IllegalArgumentException(fe.getMessage() + ", data: " + data, fe);
+                                    throw new IllegalArgumentException(fe.getMessage() + ", data: " + colValue, fe);
                                 } catch (Exception e) {
-                                    throw new IllegalArgumentException("Parsing error: " + data, e);
+                                    throw new IllegalArgumentException("Parsing error: " + colValue, e);
                                 }
                             } else {
                                 value = getDefaultValueForPrimitive(field.getType());
@@ -135,6 +135,11 @@ public class SeperatedTextDataBindFactory extends DataBindAbstractFactory implem
                             model = null;
                         }
                     } else {
+                        String data = tokens.get(dataField.seq() - 1);
+                        if (dataField.trim()) {
+                            data = data.trim();
+                        }
+
                         Format<?> format;
                         String pattern = dataField.pattern();
                         format = FormatFactory.getFormat(field.getType(), pattern, dataField.precision());
@@ -359,8 +364,11 @@ public class SeperatedTextDataBindFactory extends DataBindAbstractFactory implem
             for (Class<?> cl : models) {
                 SeperatedTextMessage record = cl.getAnnotation(SeperatedTextMessage.class);
                 if (record != null) {
-                    separator = record.separator();
-                    quote = record.quote();
+                    boolean isMainClass = record.mainClass();
+                    if (isMainClass) {
+                        separator = record.separator();
+                        quote = record.quote();
+                    }
                 }
             }
         }

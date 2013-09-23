@@ -5,7 +5,7 @@ import common.dataformat.annotation.DataField;
 import common.dataformat.annotation.SeperatedTextMessage;
 
 @SeperatedTextMessage(separator = "\\|")
-public class PaynotesInfo {
+public class TOA2010PaynotesInfo {
 
     private String pkid;
 

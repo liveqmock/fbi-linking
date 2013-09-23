@@ -1,11 +1,11 @@
-package apps.fisjz.domain.staring.T2011Response;
+package apps.fisjz.domain.staring.T2013Response;
 
 
 import common.dataformat.annotation.DataField;
 import common.dataformat.annotation.SeperatedTextMessage;
 
-@SeperatedTextMessage(separator = "\\|",  mainClass = true)
-public class TOA2011 {
+@SeperatedTextMessage(separator = "\\|")
+public class TOA2013 {
     @DataField(seq = 1)
     private String  rtnCode;
 

@@ -10,7 +10,7 @@ import java.util.Map;
 public interface DataBindFactory {
 
     void initModel() throws Exception;
-    void bind(List<String> tokens, Map<String, Object> model) throws Exception;
-    String unbind(Map<String, Object> model) throws Exception;
+    void bind(List<String> tokens, Map<String, Object> modelMap) throws Exception;
+    String unbind(Map<String, Object> modelMap) throws Exception;
 }
 

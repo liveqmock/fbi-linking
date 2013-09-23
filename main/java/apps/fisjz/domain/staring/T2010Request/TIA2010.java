@@ -10,7 +10,7 @@ import common.dataformat.annotation.SeperatedTextMessage;
  * Time: ÏÂÎç4:19
  * To change this template use File | Settings | File Templates.
  */
-@SeperatedTextMessage(separator = "\\|")
+@SeperatedTextMessage(separator = "\\|", mainClass = true)
 public class TIA2010 {
     @DataField(seq = 1)
     private String year;    //Äê¶È

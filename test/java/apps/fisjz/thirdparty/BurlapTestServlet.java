@@ -41,7 +41,7 @@ public class BurlapTestServlet extends BurlapServlet {
         detailsList.add(detailMap);
         detailMap = new HashMap();
         detailMap.put("billid", "sub222");
-        detailMap.put("mainid", "main1111");
+        detailMap.put("mainid", "main2222");
         detailsList.add(detailMap);
 
         resultContentMap.put("details", detailsList);

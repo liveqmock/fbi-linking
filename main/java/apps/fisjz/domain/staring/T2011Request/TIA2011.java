@@ -11,7 +11,7 @@ import common.dataformat.annotation.SeperatedTextMessage;
  * Time: 下午4:19
  * To change this template use File | Settings | File Templates.
  */
-@SeperatedTextMessage(separator = "\\|")
+@SeperatedTextMessage(separator = "\\|", mainClass = true)
 public class TIA2011 {
     @DataField(seq = 1)
     private String year;    //年度
@@ -20,7 +20,7 @@ public class TIA2011 {
     private String finorg;  //财政编码
 
     @Link
-    private  PaynotesInfo paynotesInfo;
+    private TIA2011PaynotesInfo paynotesInfo;
 
     public String getYear() {
         return year;
@@ -38,11 +38,11 @@ public class TIA2011 {
         this.finorg = finorg;
     }
 
-    public PaynotesInfo getPaynotesInfo() {
+    public TIA2011PaynotesInfo getPaynotesInfo() {
         return paynotesInfo;
     }
 
-    public void setPaynotesInfo(PaynotesInfo paynotesInfo) {
+    public void setPaynotesInfo(TIA2011PaynotesInfo paynotesInfo) {
         this.paynotesInfo = paynotesInfo;
     }
 }

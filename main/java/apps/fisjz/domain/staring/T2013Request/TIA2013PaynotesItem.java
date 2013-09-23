@@ -1,72 +1,34 @@
-package apps.fisjz.domain.staring.T2010Response;
+package apps.fisjz.domain.staring.T2013Request;
 
 import common.dataformat.annotation.DataField;
-import common.dataformat.annotation.SeperatedTextMessage;
+import common.dataformat.annotation.OneToManySeperatedTextMessage;
 
-@SeperatedTextMessage(separator = ",")
-public class PaynotesItem {
-    
-    private String pkid;
-
+@OneToManySeperatedTextMessage(separator = ",")
+public class TIA2013PaynotesItem {
     @DataField(seq = 1)
-    private String billid;    //序列
-
-    @DataField(seq = 2)
-    private String mainid;    //主单ID/主单序列
-
-    @DataField(seq = 3)
-    private String nontaxprogramcode;  //非税项目编码
-
-    @DataField(seq = 4)
-    private String nontaxprogramname;   //非税项目名称
-
-    @DataField(seq = 5)
-    private String units;      //计量单位    16位整数4小数
-
-    @DataField(seq = 6)
-    private String amount;    //数量 16位整数 4小数
-
-    @DataField(seq = 7)
-    private String standardkindcode;   //收费标准编码
-
-    @DataField(seq = 8)
-    private String standardkindname;  //收费标准名称
-
-    @DataField(seq = 9)
-    private String amt;    //金额 16位整数2小数
-
-    
     private String banknum;
 
-    
-    public String getPkid() {
-        return pkid;
-    }
+    @DataField(seq = 2)
+    private String nontaxprogramcode;  //非税项目编码
 
-    
-    public void setPkid(String pkid) {
-        this.pkid = pkid == null ? null : pkid.trim();
-    }
+    @DataField(seq = 3)
+    private String nontaxprogramname;   //非税项目名称
 
-    
-    public String getBillid() {
-        return billid;
-    }
+    @DataField(seq = 4)
+    private String units;      //计量单位    16位整数4小数
 
-    
-    public void setBillid(String billid) {
-        this.billid = billid == null ? null : billid.trim();
-    }
+    @DataField(seq = 5)
+    private String amount;    //数量 16位整数 4小数
 
-    
-    public String getMainid() {
-        return mainid;
-    }
+    @DataField(seq = 6)
+    private String standardkindcode;   //收费标准编码
 
-    
-    public void setMainid(String mainid) {
-        this.mainid = mainid == null ? null : mainid.trim();
-    }
+    @DataField(seq = 7)
+    private String standardkindname;  //收费标准名称
+
+    @DataField(seq = 8)
+    private String amt;    //金额 16位整数2小数
+
 
     
     public String getNontaxprogramcode() {
@@ -146,5 +108,19 @@ public class PaynotesItem {
     
     public void setBanknum(String banknum) {
         this.banknum = banknum == null ? null : banknum.trim();
+    }
+
+    @Override
+    public String toString() {
+        return "TIA2013PaynotesItem{" +
+                "banknum='" + banknum + '\'' +
+                ", nontaxprogramcode='" + nontaxprogramcode + '\'' +
+                ", nontaxprogramname='" + nontaxprogramname + '\'' +
+                ", units='" + units + '\'' +
+                ", amount='" + amount + '\'' +
+                ", standardkindcode='" + standardkindcode + '\'' +
+                ", standardkindname='" + standardkindname + '\'' +
+                ", amt='" + amt + '\'' +
+                '}';
     }
 }

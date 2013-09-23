@@ -8,25 +8,25 @@ import common.dataformat.annotation.SeperatedTextMessage;
 
 import java.util.List;
 
-@SeperatedTextMessage(separator = "\\|")
+@SeperatedTextMessage(separator = "\\|", mainClass = true)
 public class TOA2010 {
     @Link
-    private  PaynotesInfo paynotesInfo;
+    private TOA2010PaynotesInfo paynotesInfo;
 
     //add
     @DataField(seq = 24)
     private String  itemNum;
 
     @DataField(seq = 25)
-    @OneToMany(mappedTo = "apps.fisjz.domain.staring.T1532010.PaynotesItem", totalNumberField = "itemNum")
-    private List<PaynotesItem> paynotesItems;
+    @OneToMany(mappedTo = "apps.fisjz.domain.staring.T1532010.TOA2010PaynotesItem", totalNumberField = "itemNum")
+    private List<TOA2010PaynotesItem> paynotesItems;
 
 
-    public PaynotesInfo getPaynotesInfo() {
+    public TOA2010PaynotesInfo getPaynotesInfo() {
         return paynotesInfo;
     }
 
-    public void setPaynotesInfo(PaynotesInfo paynotesInfo) {
+    public void setPaynotesInfo(TOA2010PaynotesInfo paynotesInfo) {
         this.paynotesInfo = paynotesInfo;
     }
 
@@ -38,11 +38,11 @@ public class TOA2010 {
         this.itemNum = itemNum;
     }
 
-    public List<PaynotesItem> getPaynotesItems() {
+    public List<TOA2010PaynotesItem> getPaynotesItems() {
         return paynotesItems;
     }
 
-    public void setPaynotesItems(List<PaynotesItem> paynotesItems) {
+    public void setPaynotesItems(List<TOA2010PaynotesItem> paynotesItems) {
         this.paynotesItems = paynotesItems;
     }
 }
