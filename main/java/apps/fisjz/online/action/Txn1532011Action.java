@@ -35,8 +35,7 @@ public class Txn1532011Action extends AbstractTxnAction {
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
         // 解析报文体
         SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2011Request");
-        String reqMsg = new String(msg.msgBody, 1, msg.msgBody.length - 2);
-        TIA2011 tia = (TIA2011)dataFormat.fromMessage(reqMsg, "TIA2011");
+        TIA2011 tia = (TIA2011)dataFormat.fromMessage(new String(msg.msgBody), "TIA2011");
 
         logger.info("[1532011缴款书缴款] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 缴款书编号:" + tia.getPaynotesInfo().getNotescode());
 

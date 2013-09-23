@@ -15,6 +15,12 @@ public abstract class AbstractTxnAction {
     public LFixedLengthProtocol run(LFixedLengthProtocol tia) {
         try {
             tia.rtnCode = "0000";
+            int length = tia.msgBody.length;
+            if (length > 2) {
+                byte[] buf = new byte[length - 2];
+                System.arraycopy(tia.msgBody, 1, buf, 0, buf.length);
+                tia.msgBody = buf;
+            }
             return process(tia);
         } catch (Exception e) {
             logger.error("Action业务处理错误。", e);
@@ -24,9 +30,9 @@ public abstract class AbstractTxnAction {
 
     abstract protected LFixedLengthProtocol process(LFixedLengthProtocol tia) throws Exception;
 
-    protected boolean getResponseResult(List<Map> rtnList){
+    protected boolean getResponseResult(List<Map> rtnList) {
         for (Map map : rtnList) {
-            String result = (String)map.get("RESULT");
+            String result = (String) map.get("RESULT");
             if (result != null) {
                 if ("SUCCESS".equals(result.toUpperCase())) {
                     return true;
@@ -35,12 +41,13 @@ public abstract class AbstractTxnAction {
         }
         return false;
     }
-    protected String getResponseErrMsg(List<Map> rtnList){
+
+    protected String getResponseErrMsg(List<Map> rtnList) {
         for (Map map : rtnList) {
-            String result = (String)map.get("RESULT");
+            String result = (String) map.get("RESULT");
             if (result != null) {
                 if (!"SUCCESS".equals(result.toUpperCase())) {
-                    return (String)map.get("MESSAGE");
+                    return (String) map.get("MESSAGE");
                 }
             }
         }
