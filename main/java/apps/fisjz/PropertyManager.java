@@ -9,7 +9,7 @@ public class PropertyManager {
 
     private static PropertyManager manager = null;
     private static Object managerLock = new Object();
-    private static String propsName = "/fisjz.properties";
+    private static String propsName = "/fisjz_prjcfg.properties";
     private Properties properties = null;
     private Object propertiesLock = new Object();
     private String resourceURI;

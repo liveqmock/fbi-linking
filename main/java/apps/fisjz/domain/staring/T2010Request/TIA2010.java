@@ -13,19 +13,19 @@ import common.dataformat.annotation.SeperatedTextMessage;
 @SeperatedTextMessage(separator = "\\|")
 public class TIA2010 {
     @DataField(seq = 1)
-    private String year;
+    private String year;    //年度
 
     @DataField(seq = 2)
-    private String finorg;
+    private String finorg;  //财政编码
 
     @DataField(seq = 3)
-    private String notescode;
+    private String notescode; //票据编号
 
     @DataField(seq = 4)
-    private String checkcode;
+    private String checkcode; //验证码
 
     @DataField(seq = 5)
-    private String billtype;
+    private String billtype;  //单据类型/业务类型
 
     public String getYear() {
         return year;

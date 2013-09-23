@@ -23,15 +23,15 @@ public class NontaxServiceFactory {
     private NontaxServiceFactory() {
     }
 
-    public NontaxBankService getElementService() {
+    public NontaxBankService getNontaxBankService() {
         String url = PropertyManager.getProperty("thirdparty.nontax.jiaozhou.server");
-        NontaxBankService elementService = null;
+        NontaxBankService service = null;
         try {
-            elementService = (NontaxBankService) burlapProxyFactory.create(NontaxBankService.class, url);
+            service = (NontaxBankService) burlapProxyFactory.create(NontaxBankService.class, url);
         } catch (MalformedURLException e) {
             throw new RuntimeException("½Ó¿Ú´íÎó!", e);
         }
-        return elementService;
+        return service;
     }
 
 }

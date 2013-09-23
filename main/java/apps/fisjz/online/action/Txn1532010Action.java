@@ -1,11 +1,14 @@
 package apps.fisjz.online.action;
 
+import apps.fisjz.domain.staring.T2010Request.TIA2010;
 import apps.fisjz.domain.staring.T2010Response.PaynotesInfo;
 import apps.fisjz.domain.staring.T2010Response.PaynotesItem;
-import apps.fisjz.domain.staring.T2010Request.TIA2010;
 import apps.fisjz.domain.staring.T2010Response.TOA2010;
+import apps.fisjz.gateway.financebureau.NontaxBankService;
+import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import common.dataformat.SeperatedTextDataFormat;
 import gateway.domain.LFixedLengthProtocol;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,10 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//1532010缴款书查询
+/**
+ * 1532010缴款书查询
+ * zhanrui  20130922
+ */
+
 @Component
 public class Txn1532010Action extends AbstractTxnAction {
-
     private static Logger logger = LoggerFactory.getLogger(Txn1532010Action.class);
 
     @Override
@@ -26,34 +32,39 @@ public class Txn1532010Action extends AbstractTxnAction {
 
         // 解析报文体
         SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2010Request");
-        TIA2010 tia2010 = (TIA2010)dataFormat.fromMessage(new String(msg.msgBody), "TIA2010");
+        TIA2010 tia = (TIA2010)dataFormat.fromMessage(new String(msg.msgBody), "TIA2010");
 
-        logger.info("[1532010缴款书信息查询][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
-                + "  [缴款书编号] " + tia2010.getNotescode());
+        logger.info("[1532010缴款书信息查询] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 缴款书编号:" + tia.getNotescode());
 
         //与第三方机构通讯
+        NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
+        List rtnlist = service.queryNontaxPayment("","","","","","","");
+        logger.debug("===" + rtnlist);
 
 
         //组响应报文
-        TOA2010 toa2010 = new TOA2010();
+        TOA2010 toa = new TOA2010();
         PaynotesInfo paynotesInfo = new PaynotesInfo();
-        paynotesInfo.setAmt("123123.23");
-        toa2010.setPaynotesInfo(paynotesInfo);
+        Map responseContentMap = (Map) rtnlist.get(0);
+        BeanUtils.populate(paynotesInfo, responseContentMap);
+        toa.setPaynotesInfo(paynotesInfo);
 
         List<PaynotesItem> paynotesItems = new ArrayList<PaynotesItem>();
-        PaynotesItem item = new PaynotesItem();
-        item.setAmt("1111.11");
-        paynotesItems.add(item);
-        item = new PaynotesItem();
-        item.setAmt("2222.22");
-        paynotesItems.add(item);
 
-        toa2010.setPaynotesItems(paynotesItems);
-        toa2010.setItemNum("2");
+        //TODO 判断响应报文 success
+        List details = (List)responseContentMap.get("details");
+        for (Object detail : details) {
+            PaynotesItem item = new PaynotesItem();
+            BeanUtils.populate(item, (Map)detail);
+            paynotesItems.add(item);
+        }
+
+        toa.setPaynotesItems(paynotesItems);
+        toa.setItemNum("" + paynotesItems.size());
 
         Map<String, Object> modelObjectsMap = new HashMap<String, Object>();
-        modelObjectsMap.put(toa2010.getClass().getName(),  toa2010);
-        modelObjectsMap.put(toa2010.getPaynotesInfo().getClass().getName(),  toa2010.getPaynotesInfo());
+        modelObjectsMap.put(toa.getClass().getName(), toa);
+        modelObjectsMap.put(toa.getPaynotesInfo().getClass().getName(),  toa.getPaynotesInfo());
 
         dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2010Response");
         String result = (String)dataFormat.toMessage(modelObjectsMap);
@@ -62,18 +73,4 @@ public class Txn1532010Action extends AbstractTxnAction {
         return msg;
     }
 
-
-    private String nullToEmpty(String str) {
-        return str == null ? "" : str;
-    }
-
-    private String castToDate8(String srcDate) {
-        if (srcDate == null) {
-            return "        ";
-        } else if (srcDate.length() > 8) {
-            return srcDate.substring(0, 4) + srcDate.substring(5, 7) + srcDate.substring(8, 10);
-        } else {
-            return srcDate;
-        }
-    }
 }

@@ -1,4 +1,4 @@
-package apps.fisjz.domain.staring.T2010Response;
+package apps.fisjz.domain.staring.T2011Request;
 
 
 import common.dataformat.annotation.DataField;
@@ -9,34 +9,29 @@ public class PaynotesInfo {
 
     private String pkid;
 
-    @DataField(seq = 1)
+    @DataField(seq = 4)
     private String billid;  //序列
 
-    @DataField(seq = 2)
+    @DataField(seq = 5)
     private String paynotescode; //缴款书单号
 
-    @DataField(seq = 3)
+    @DataField(seq = 6)
     private String notescode; //票据编号
 
-    @DataField(seq = 4)
+    @DataField(seq = 7)
     private String checkcode;  //验证码     一般缴款收（手工）业务可为空
 
-    @DataField(seq = 5)
+    @DataField(seq = 8)
     private String amt; //总金额      16位整数2小数
 
-    @DataField(seq = 6)
+    @DataField(seq = 9)
     private String noteskindcode; //票据信息编码
 
-    @DataField(seq = 7)
+    @DataField(seq = 10)
     private String noteskinkname; //票据信息名称
 
-    @DataField(seq = 8)
     private String performdeptcode; //执收单位编码
-
-    @DataField(seq = 9)
     private String performdeptname; //执收单位名称
-
-    @DataField(seq = 10)
     private String printdate;  //打票日期
 
     @DataField(seq = 11)
@@ -45,51 +40,48 @@ public class PaynotesInfo {
     @DataField(seq = 12)
     private String agentbankname;  //代收银行名称
 
-    @DataField(seq = 13)
     private String payfeemethodcode;  //缴款方式编码      1现金；2转账；
-
-    @DataField(seq = 14)
     private String payfeemethodname;  //缴款方式名称
-
-    @DataField(seq = 15)
     private String paymethodcode;  //缴库方式编码     0 直接缴库；1 集中汇缴库；
-
-    @DataField(seq = 16)
     private String paymethodname;  //缴库方式名称
-
-    @DataField(seq = 17)
     private String payer;  //缴款人
-
-    @DataField(seq = 18)
     private String payerbank;  //缴款人开户行
-
-    @DataField(seq = 19)
     private String payerbankacct; //缴款人账号
-
-    @DataField(seq = 20)
     private String remark;   //备注
-
-    @DataField(seq = 21)
     private String createtime;    //制单日期 yyyymmdd
 
-    @DataField(seq = 22)
+    @DataField(seq = 17)
     private String billtype;  //单据类型/业务类型
 
-    @DataField(seq = 23)
+    @DataField(seq = 18)
     private String latefee;    //滞纳金 LATEFEE 16位整数2小数
 
+    @DataField(seq = 3)
     private String banknum;    //手工票：交易流水  银行交易流水号 （手工票时不为空）
+
     private String creater;    //手工票：制单人  （手工票时不为空）
+
+    @DataField(seq = 13)
     private String bankrecdate;  //手工票：银行收款日期  yyyymmdd
+
+    @DataField(seq = 14)
     private String bankacctdate;   //手工票：银行记账日期  yyyymmdd
+
+    @DataField(seq = 15)
     private String ispreaudit;     //手工票：预审标志  0 未审核；1已审核
+
+    @DataField(seq = 16)
     private String recfeeflag;    //手工票：到账标志  0 未到账；1已到账
+
+    
+    @DataField(seq = 19)
+    private String banknotescode;   //银行代开票号  (宁夏业务)如果业务类型为 3 缴款通知书，不可为空
+
     private String fromnotescode;   //退付票：原票据编号 (退付票时不为空)
     private String recusername;   //领款人名称
     private String recuserbank;   //领款人开户行
     private String recuserbankaccount;   //领款人账号
     private String refundreason;   //退付原因
-    private String banknotescode;   //银行代开票号  (宁夏业务)如果业务类型为 3 缴款通知书，不可为空
     private String refundapplycode;   //申请书编号(退付)
     private String text1;   //预留字段
     private String text2;   //预留字段
@@ -478,4 +470,3 @@ public class PaynotesInfo {
         this.text3 = text3;
     }
 }
-
