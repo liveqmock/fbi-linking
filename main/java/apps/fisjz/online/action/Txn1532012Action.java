@@ -2,7 +2,6 @@ package apps.fisjz.online.action;
 
 import apps.fisjz.domain.financebureau.FbPaynotesInfo;
 import apps.fisjz.domain.staring.T2012Request.TIA2012;
-import apps.fisjz.domain.staring.T2012Response.TOA2012;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -16,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 1532012缴款书到帐确认
@@ -48,22 +45,18 @@ public class Txn1532012Action extends AbstractTxnAction {
         List rtnlist = service.updateNontaxPayment(FISJZ_APPLICATIONID, FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
 
         //判断财政局响应结果
-        if (!getResponseResult(rtnlist)) {
-            throw new RuntimeException(getResponseErrMsg(rtnlist));
+        if (getResponseResult(rtnlist)) { //到帐确认成功
+            //业务逻辑处理
+            FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
+            BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
+            paymentService.processPaymentPayAccount(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
+            msg.rtnCode = "0000";
+            msg.msgBody =  "到帐确认成功".getBytes("GBK");
+        }else{ //到帐确认失败
+            msg.rtnCode = "1001";
+            msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
+            return msg;
         }
-
-        //业务逻辑处理
-        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
-        BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-        paymentService.processPaymentPayAccount(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
-
-        //组特色平台响应报文
-        TOA2012 toa = new TOA2012();
-        Map<String, Object> modelObjectsMap = new HashMap<String, Object>();
-        modelObjectsMap.put(toa.getClass().getName(), toa);
-        dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2012Response");
-        String toaMsg = (String) dataFormat.toMessage(modelObjectsMap);
-        msg.msgBody = toaMsg.getBytes();
         return msg;
     }
 }

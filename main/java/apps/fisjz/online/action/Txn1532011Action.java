@@ -2,7 +2,6 @@ package apps.fisjz.online.action;
 
 import apps.fisjz.domain.financebureau.FbPaynotesInfo;
 import apps.fisjz.domain.staring.T2011Request.TIA2011;
-import apps.fisjz.domain.staring.T2011Response.TOA2011;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -16,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 1532011缴款书缴款
@@ -38,6 +35,16 @@ public class Txn1532011Action extends AbstractTxnAction {
         TIA2011 tia = (TIA2011)dataFormat.fromMessage(new String(msg.msgBody), "TIA2011");
         logger.info("[1532011缴款书缴款] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 缴款书编号:" + tia.getPaynotesInfo().getNotescode());
 
+        //业务逻辑处理(检查处理重复数据)
+        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
+        BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
+        int rtn = paymentService.processPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
+        if (rtn == 1) {//重复缴款
+            msg.rtnCode = "0000";
+            msg.msgBody =  "缴款成功(重复缴款)".getBytes("GBK");
+            return msg;
+        }
+
         //与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
         List<FbPaynotesInfo> paramList = new ArrayList<FbPaynotesInfo>();
@@ -48,22 +55,14 @@ public class Txn1532011Action extends AbstractTxnAction {
         List rtnlist = service.updateNontaxPayment(FISJZ_APPLICATIONID,FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
 
         //判断财政局响应结果
-        if (!getResponseResult(rtnlist)) {
-            throw  new RuntimeException(getResponseErrMsg(rtnlist));
+        if (getResponseResult(rtnlist)) { //缴款成功
+            msg.rtnCode = "0000";
+            msg.msgBody =  "缴款成功".getBytes("GBK");
+        }else{ //缴款失败
+            msg.rtnCode = "1000";
+            msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
+            return msg;
         }
-
-        //业务逻辑处理
-        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
-        BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-        paymentService.processPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
-
-        //组特色平台响应报文
-        TOA2011 toa = new TOA2011();
-        Map<String, Object> modelObjectsMap = new HashMap<String, Object>();
-        modelObjectsMap.put(toa.getClass().getName(), toa);
-        dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2011Response");
-        String toaMsg = (String)dataFormat.toMessage(modelObjectsMap);
-        msg.msgBody = toaMsg.getBytes();
         return msg;
     }
 }

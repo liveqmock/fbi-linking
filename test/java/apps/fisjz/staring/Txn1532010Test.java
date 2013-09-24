@@ -23,7 +23,7 @@ public class Txn1532010Test {
             t.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             t.serialNo = "SPDB" + t.txnTime;
 
-            t.msgBody = "2013|CZBM|PJBH001|YZM01|0".getBytes();
+            t.msgBody = "|2013|CZBM|PJBH001|YZM01|0|".getBytes();
 
             System.out.println("·¢ËÍ±¨ÎÄ£º" + new String(t.toByteArray()));
             //Socket socket = new Socket("10.22.0.45", 60001);

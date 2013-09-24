@@ -2,7 +2,6 @@ package apps.fisjz.online.action;
 
 import apps.fisjz.domain.financebureau.FbPaynotesInfo;
 import apps.fisjz.domain.staring.T2031Request.TIA2031;
-import apps.fisjz.domain.staring.T2031Response.TOA2031;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -16,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 1532031 缴款退付确认
@@ -39,6 +36,16 @@ public class Txn1532031Action extends AbstractTxnAction {
         TIA2031 tia = (TIA2031)dataFormat.fromMessage(new String(msg.msgBody), "TIA2031");
         logger.info("[1532031退付缴款确认] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 退付缴款书编号:" + tia.getPaynotesInfo().getRefundapplycode());
 
+        //业务逻辑处理(检查处理重复数据)
+        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
+        BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
+        int rtn = paymentService.processPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
+        if (rtn == 1) {//重复退付缴款
+            msg.rtnCode = "0000";
+            msg.msgBody =  "缴款退付确认成功(重复确认)".getBytes("GBK");
+            return msg;
+        }
+
         //与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
         List<FbPaynotesInfo> paramList = new ArrayList<FbPaynotesInfo>();
@@ -49,22 +56,14 @@ public class Txn1532031Action extends AbstractTxnAction {
         List rtnlist = service.updateNontaxPayment(FISJZ_APPLICATIONID,FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
 
         //判断财政局响应结果
-        if (!getResponseResult(rtnlist)) {
-            throw  new RuntimeException(getResponseErrMsg(rtnlist));
+        if (getResponseResult(rtnlist)) { //缴款退付成功
+            msg.rtnCode = "0000";
+            msg.msgBody =  "缴款退付成功".getBytes("GBK");
+        }else{ //缴款失败
+            msg.rtnCode = "1003";
+            msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
+            return msg;
         }
-
-        //业务逻辑处理
-        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
-        BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-        paymentService.processRefundPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
-
-        //组特色平台响应报文
-        TOA2031 toa = new TOA2031();
-        Map<String, Object> modelObjectsMap = new HashMap<String, Object>();
-        modelObjectsMap.put(toa.getClass().getName(), toa);
-        dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2031Response");
-        String toaMsg = (String)dataFormat.toMessage(modelObjectsMap);
-        msg.msgBody = toaMsg.getBytes();
         return msg;
     }
 }
