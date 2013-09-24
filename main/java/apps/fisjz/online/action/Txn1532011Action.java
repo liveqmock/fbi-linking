@@ -36,13 +36,13 @@ public class Txn1532011Action extends AbstractTxnAction {
         TIA2011 tia = (TIA2011)dataFormat.fromMessage(new String(msg.msgBody), "TIA2011");
         logger.info("[1532011缴款书缴款] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 票据编号:" + tia.getPaynotesInfo().getNotescode());
 
-        //业务逻辑处理(检查处理重复数据)
+        //业务逻辑处理
         FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
         BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
         int rtn = paymentService.processPaymentPay(tia.getAreacode(), msg.branchID, msg.tellerID, fsJzfPaymentInfo);
-        if (rtn == 1) {//重复缴款
-            msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
-            msg.msgBody =  "缴款成功(重复缴款)".getBytes("GBK");
+        if (rtn == -1) {
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+            msg.msgBody =  "请先查询缴款单信息.".getBytes("GBK");
             return msg;
         }
 

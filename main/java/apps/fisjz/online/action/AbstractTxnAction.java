@@ -8,6 +8,7 @@ import gateway.domain.LFixedLengthProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public abstract class AbstractTxnAction {
     @Autowired
     FsSysAreaConfigMapper areaConfigMapper;
 
+    @Transactional
     public LFixedLengthProtocol run(LFixedLengthProtocol tia) {
         try {
             tia.rtnCode = "0000";

@@ -6,6 +6,7 @@ import apps.fisjz.repository.dao.FsJzfPaymentInfoMapper;
 import apps.fisjz.repository.dao.FsJzfPaymentItemMapper;
 import apps.fisjz.repository.model.FsJzfPaymentInfo;
 import apps.fisjz.repository.model.FsJzfPaymentInfoExample;
+import apps.fisjz.repository.model.FsJzfPaymentItem;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -34,23 +35,50 @@ public class PaymentService {
     @Autowired
     FsJzfPaymentItemMapper paymentItemMapper;
 
-    public int processInitPaymentInfoAndPaymentItem(TOA2010PaynotesInfo paynotesInfo, List<TOA2010PaynotesItem> paynotesItems) throws InvocationTargetException, IllegalAccessException {
-        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
+    public FsJzfPaymentInfo findLocalDbPaymentInfo(String areaCode, String notesCode, String checkCode,String billType){
+        FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
+        example.createCriteria()
+                .andNotescodeEqualTo(notesCode)
+                .andCheckcodeEqualTo(checkCode)
+                .andBilltypeEqualTo(billType)
+                .andAreaCodeEqualTo(areaCode)
+                .andArchiveFlagEqualTo("0");
+        List<FsJzfPaymentInfo> recordList  = paymentInfoMapper.selectByExample(example);
+        if (recordList.size() == 1) {
+              return recordList.get(0);
+        }else if (recordList.size() == 0) {
+            return null;
+        } else {
+            throw new RuntimeException("重复记录！");
+        }
+    }
+
+    public int processInitPaymentInfoAndPaymentItem(String areaCode, String branchId, String tellerId,
+                                                    TOA2010PaynotesInfo paynotesInfo,
+                                                    List<TOA2010PaynotesItem> paynotesItems) throws InvocationTargetException, IllegalAccessException {
 
         FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
         example.createCriteria()
                 .andNotescodeEqualTo(paynotesInfo.getNotescode())
                 .andBilltypeEqualTo(paynotesInfo.getBilltype())
+                .andAreaCodeEqualTo(areaCode)
                 .andArchiveFlagEqualTo("0");
 
         List<FsJzfPaymentInfo> recordList  = paymentInfoMapper.selectByExample(example);
         if (recordList.size() == 0) {
-            BeanUtils.copyProperties(paynotesInfo, fsJzfPaymentInfo);
-            fsJzfPaymentInfo.setArchiveFlag("0");
-            paymentInfoMapper.insert(fsJzfPaymentInfo);
-            return 0;
+            //初始化主表
+            FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
+            BeanUtils.copyProperties(fsJzfPaymentInfo, paynotesInfo);
+            insertPaymentInfo_init(areaCode, branchId, tellerId, fsJzfPaymentInfo);
+            //初始化子项目明细表
+            for (TOA2010PaynotesItem paynotesItem : paynotesItems) {
+                FsJzfPaymentItem fsJzfPaymentItem = new FsJzfPaymentItem();
+                BeanUtils.copyProperties(fsJzfPaymentItem, paynotesItem);
+                paymentItemMapper.insert(fsJzfPaymentItem);
+            }
+            return 0; //初始化
         }else{
-            return 1;
+            return 1;  //已存在
         }
     }
 
@@ -60,6 +88,7 @@ public class PaymentService {
         example.createCriteria()
                 .andNotescodeEqualTo(paymentInfo.getNotescode())
                 .andBilltypeEqualTo(paymentInfo.getBilltype())
+                .andAreaCodeEqualTo(areaCode)
                 .andArchiveFlagEqualTo("0");
 
         List<FsJzfPaymentInfo> recordList  = paymentInfoMapper.selectByExample(example);
@@ -67,25 +96,30 @@ public class PaymentService {
             logger.error("重复记录超过一条！" + paymentInfo.toString());
             throw new RuntimeException("重复记录超过一条!");
         }else if (recordList.size() == 1) {
-            //更新重复记录为已归档记录
             FsJzfPaymentInfo record = recordList.get(0);
-            record.setArchiveFlag("1");
-            record.setArchiveOperBankid(branchId);
-            record.setArchiveOperId(tellerId);
-            record.setArchiveOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
-            record.setArchiveOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
-            paymentInfoMapper.updateByPrimaryKey(record);
-            //插入新纪录
-            insertPaymentPay(areaCode, branchId,tellerId,paymentInfo);
-            return 1;
+            if ("0".equals(record.getFbBookFlag())) { //初始记录
+                //更新
+                processPaymentInfo_Pay(areaCode, branchId, tellerId, record);
+                paymentInfoMapper.updateByPrimaryKey(record);
+            } else { //属于重复缴款，则进行归档处理，用于自动冲正
+                //更新重复记录为已归档记录
+                record.setArchiveFlag("1");
+                record.setArchiveOperBankid(branchId);
+                record.setArchiveOperId(tellerId);
+                record.setArchiveOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+                record.setArchiveOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
+                paymentInfoMapper.updateByPrimaryKey(record);
+                //插入新纪录
+                processPaymentInfo_Pay(areaCode, branchId, tellerId, paymentInfo);
+                paymentInfoMapper.insert(paymentInfo);
+            }
         }else{
-            //插入新纪录
-            insertPaymentPay(areaCode, branchId,tellerId,paymentInfo);
+            return -1;
         }
         return 0;
     }
     //普通缴款书缴款到账处理
-    public void processPaymentPayAccount(String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
+    public void processPaymentPayAccount(String areaCode, String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
         String notesCode = paymentInfo.getNotescode();
         if (StringUtils.isEmpty(notesCode)) {
             throw new RuntimeException("票据编号不能为空!");
@@ -98,6 +132,7 @@ public class PaymentService {
         example.createCriteria()
                 .andNotescodeEqualTo(notesCode)
                 .andBilltypeIn(billTypes)
+                .andAreaCodeEqualTo(areaCode)
                 .andArchiveFlagEqualTo("0");
 
         List<FsJzfPaymentInfo> recordList  = paymentInfoMapper.selectByExample(example);
@@ -129,7 +164,29 @@ public class PaymentService {
 
 
     //=============
-    private void insertPaymentPay(String areaCode,String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
+
+    //查询时初始化记录
+    private void insertPaymentInfo_init(String areaCode, String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
+        paymentInfo.setOperBankid(branchId);
+        paymentInfo.setOperId(tellerId);
+        paymentInfo.setOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        paymentInfo.setOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
+
+        paymentInfo.setHostBookFlag("0");
+        paymentInfo.setHostChkFlag("0");
+
+        paymentInfo.setFbBookFlag("0");
+        paymentInfo.setFbChkFlag("0");
+
+        //正常记录标志
+        paymentInfo.setArchiveFlag("0");
+        paymentInfo.setAreaCode(areaCode);
+
+        paymentInfoMapper.insert(paymentInfo);
+    }
+
+    //缴款
+    private void processPaymentInfo_Pay(String areaCode, String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
         paymentInfo.setOperBankid(branchId);
         paymentInfo.setOperId(tellerId);
         paymentInfo.setOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
@@ -145,8 +202,6 @@ public class PaymentService {
 
         //正常记录标志
         paymentInfo.setArchiveFlag("0");
-
         paymentInfo.setAreaCode(areaCode);
-        paymentInfoMapper.insert(paymentInfo);
     }
 }
