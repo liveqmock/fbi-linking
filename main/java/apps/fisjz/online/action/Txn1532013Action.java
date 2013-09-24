@@ -1,7 +1,9 @@
 package apps.fisjz.online.action;
 
-import apps.fisjz.domain.financebureau.FbPaynotesInfo;
+import apps.fisjz.domain.financebureau.FbPaynotesInfo4Manual;
+import apps.fisjz.domain.financebureau.FbPaynotesItem;
 import apps.fisjz.domain.staring.T2013Request.TIA2013;
+import apps.fisjz.domain.staring.T2013Request.TIA2013PaynotesItem;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -47,10 +49,20 @@ public class Txn1532013Action extends AbstractTxnAction {
 
         //与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
-        List<FbPaynotesInfo> paramList = new ArrayList<FbPaynotesInfo>();
-        FbPaynotesInfo fbPaynotesInfo = new FbPaynotesInfo();
+        List<FbPaynotesInfo4Manual> paramList = new ArrayList<FbPaynotesInfo4Manual>();
+        FbPaynotesInfo4Manual fbPaynotesInfo = new FbPaynotesInfo4Manual();
         BeanUtils.copyProperties(fbPaynotesInfo, tia.getPaynotesInfo());
+
+        List<TIA2013PaynotesItem> tiaItems = tia.getPaynotesItems();
+        List<FbPaynotesItem> fbItems = new ArrayList<FbPaynotesItem>();
+        for (TIA2013PaynotesItem tiaItem : tiaItems) {
+            FbPaynotesItem  fbItem = new FbPaynotesItem();
+            BeanUtils.copyProperties(fbItem, tiaItem);
+            fbItems.add(fbItem);
+        }
+        fbPaynotesInfo.setDetails(fbItems);
         paramList.add(fbPaynotesInfo);
+
         logger.info("[1532013手工缴款书缴款] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
         List rtnlist = service.insertNontaxPayment(FISJZ_APPLICATIONID, FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
 

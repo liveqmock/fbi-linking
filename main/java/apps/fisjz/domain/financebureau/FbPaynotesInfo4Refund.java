@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 退付票
  */
-public class FbRefundPaynotesInfo implements Serializable {
+public class FbPaynotesInfo4Refund implements Serializable {
     private String billid;  //序列
     private String refundapplycode; //申请书单号
     private String paynotescode; //原缴款书单号
@@ -229,7 +229,7 @@ public class FbRefundPaynotesInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "FbRefundPaynotesInfo{" +
+        return "FbPaynotesInfo4Refund{" +
                 "billid='" + billid + '\'' +
                 ", refundapplycode='" + refundapplycode + '\'' +
                 ", paynotescode='" + paynotescode + '\'' +

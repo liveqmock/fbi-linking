@@ -42,7 +42,7 @@ public class Txn1532012Action extends AbstractTxnAction {
         BeanUtils.copyProperties(fbPaynotesInfo, tia.getPaynotesInfo());
         paramList.add(fbPaynotesInfo);
         logger.info("[1532012缴款书到帐确认] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
-        List rtnlist = service.updateNontaxPayment(FISJZ_APPLICATIONID, FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
+        List rtnlist = service.accountNontaxPayment(FISJZ_APPLICATIONID, FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
 
         //判断财政局响应结果
         if (getResponseResult(rtnlist)) { //到帐确认成功

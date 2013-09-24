@@ -1,6 +1,6 @@
 package apps.fisjz.online.action;
 
-import apps.fisjz.domain.financebureau.FbPaynotesInfo;
+import apps.fisjz.domain.financebureau.FbPaynotesInfo4Refund;
 import apps.fisjz.domain.staring.T2031Request.TIA2031;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
@@ -48,12 +48,12 @@ public class Txn1532031Action extends AbstractTxnAction {
 
         //与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
-        List<FbPaynotesInfo> paramList = new ArrayList<FbPaynotesInfo>();
-        FbPaynotesInfo fbPaynotesInfo = new FbPaynotesInfo();
+        List<FbPaynotesInfo4Refund> paramList = new ArrayList<FbPaynotesInfo4Refund>();
+        FbPaynotesInfo4Refund fbPaynotesInfo = new FbPaynotesInfo4Refund();
         BeanUtils.copyProperties(fbPaynotesInfo, tia.getPaynotesInfo());
         paramList.add(fbPaynotesInfo);
         logger.info("[1532031退付缴款确认] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
-        List rtnlist = service.updateNontaxPayment(FISJZ_APPLICATIONID,FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
+        List rtnlist = service.updateRefundNontaxPayment(FISJZ_APPLICATIONID, FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
 
         //判断财政局响应结果
         if (getResponseResult(rtnlist)) { //缴款退付成功

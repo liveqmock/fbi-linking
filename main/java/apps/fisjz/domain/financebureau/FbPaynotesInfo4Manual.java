@@ -1,11 +1,12 @@
 package apps.fisjz.domain.financebureau;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 手工票
  */
-public class FbManualPaynotesInfo implements Serializable{
+public class FbPaynotesInfo4Manual implements Serializable{
     private String banknum;    //手工票：交易流水  银行交易流水号 （手工票时不为空）
     private String notescode; //票据编号
     private String checkcode;  //验证码     一般缴款收（手工）业务可为空
@@ -34,7 +35,7 @@ public class FbManualPaynotesInfo implements Serializable{
     private String ispreaudit;     //手工票：预审标志  0 未审核；1已审核
     private String recfeeflag;    //手工票：到账标志  0 未到账；1已到账
 
-
+    private List<FbPaynotesItem> details;
     //=======================================================================
     public String getBanknum() {
         return banknum;
@@ -252,9 +253,17 @@ public class FbManualPaynotesInfo implements Serializable{
         this.creater = creater;
     }
 
+    public List<FbPaynotesItem> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<FbPaynotesItem> details) {
+        this.details = details;
+    }
+
     @Override
     public String toString() {
-        return "FbManualPaynotesInfo{" +
+        return "FbPaynotesInfo4Manual{" +
                 "banknum='" + banknum + '\'' +
                 ", notescode='" + notescode + '\'' +
                 ", checkcode='" + checkcode + '\'' +
@@ -282,6 +291,7 @@ public class FbManualPaynotesInfo implements Serializable{
                 ", bankacctdate='" + bankacctdate + '\'' +
                 ", ispreaudit='" + ispreaudit + '\'' +
                 ", recfeeflag='" + recfeeflag + '\'' +
+                ", details=" + details +
                 '}';
     }
 }

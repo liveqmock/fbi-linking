@@ -40,7 +40,7 @@ public class SeperatedTextDataFormat extends DataBindAbstractDataFormat {
         Map<String, Object> modelMap = factory.factory();
 
         String separator = factory.getSeparator();
-        String[] tokens = ((String)req).split(separator);
+        String[] tokens = ((String)req).split(separator, -1);
         List<String> result = Arrays.asList(tokens);
         if (result.size() == 0 || result.isEmpty()) {
             throw new java.lang.IllegalArgumentException("Request String is empty!");
