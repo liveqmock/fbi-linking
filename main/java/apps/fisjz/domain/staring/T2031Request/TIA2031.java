@@ -1,4 +1,4 @@
-package apps.fisjz.domain.staring.T2011Request;
+package apps.fisjz.domain.staring.T2031Request;
 
 import common.dataformat.annotation.DataField;
 import common.dataformat.annotation.Link;
@@ -12,7 +12,7 @@ import common.dataformat.annotation.SeperatedTextMessage;
  * To change this template use File | Settings | File Templates.
  */
 @SeperatedTextMessage(separator = "\\|", mainClass = true)
-public class TIA2011 {
+public class TIA2031 {
     @DataField(seq = 1)
     private String year;    //年度
 
@@ -20,7 +20,7 @@ public class TIA2011 {
     private String finorg;  //财政编码
 
     @Link
-    private TIA2011PaynotesInfo paynotesInfo;
+    private TIA2031PaynotesInfo paynotesInfo;
 
     public String getYear() {
         return year;
@@ -38,11 +38,11 @@ public class TIA2011 {
         this.finorg = finorg;
     }
 
-    public TIA2011PaynotesInfo getPaynotesInfo() {
+    public TIA2031PaynotesInfo getPaynotesInfo() {
         return paynotesInfo;
     }
 
-    public void setPaynotesInfo(TIA2011PaynotesInfo paynotesInfo) {
+    public void setPaynotesInfo(TIA2031PaynotesInfo paynotesInfo) {
         this.paynotesInfo = paynotesInfo;
     }
 

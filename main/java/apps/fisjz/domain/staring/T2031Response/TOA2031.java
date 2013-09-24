@@ -1,11 +1,11 @@
-package apps.fisjz.domain.staring.T2011Response;
+package apps.fisjz.domain.staring.T2031Response;
 
 
 import common.dataformat.annotation.DataField;
 import common.dataformat.annotation.SeperatedTextMessage;
 
 @SeperatedTextMessage(separator = "\\|",  mainClass = true)
-public class TOA2011 {
+public class TOA2031 {
     @DataField(seq = 1)
     private String  rtnCode;
 
@@ -32,7 +32,7 @@ public class TOA2011 {
 
     @Override
     public String toString() {
-        return "TOA2011{" +
+        return "TOA2031{" +
                 "rtnCode='" + rtnCode + '\'' +
                 ", rtnMsg='" + rtnMsg + '\'' +
                 '}';

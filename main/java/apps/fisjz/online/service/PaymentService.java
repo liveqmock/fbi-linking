@@ -43,7 +43,6 @@ public class PaymentService {
         paymentInfo.setFbChkFlag("0");
         paymentInfoMapper.insert(paymentInfo);
     }
-
     //普通缴款书缴款到账处理
     public void processPaymentPayAccount(String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
         String paynotesCode = paymentInfo.getPaynotescode();
@@ -65,5 +64,22 @@ public class PaymentService {
         FsJzfPaymentInfo record = recordList.get(0);
         record.setRecfeeflag("1");
         paymentInfoMapper.updateByPrimaryKey(record);
+    }
+
+    //退付缴款书确认
+    public void processRefundPaymentPay(String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
+        paymentInfo.setOperBankid(branchId);
+        paymentInfo.setOperId(tellerId);
+        paymentInfo.setOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        paymentInfo.setOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
+
+        //主机记账成功
+        paymentInfo.setHostBookFlag("1");
+        paymentInfo.setHostChkFlag("0");
+
+        //财政记账成功
+        paymentInfo.setFbBookFlag("1");
+        paymentInfo.setFbChkFlag("0");
+        paymentInfoMapper.insert(paymentInfo);
     }
 }
