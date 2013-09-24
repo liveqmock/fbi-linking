@@ -1,6 +1,5 @@
 package apps.fisjz.online.action;
 
-import apps.fisjz.PropertyManager;
 import apps.fisjz.enums.TxnRtnCode;
 import apps.fisjz.repository.dao.FsSysAreaConfigMapper;
 import apps.fisjz.repository.model.FsSysAreaConfig;
@@ -15,9 +14,6 @@ import java.util.Map;
 
 public abstract class AbstractTxnAction {
     private static Logger logger = LoggerFactory.getLogger(AbstractTxnAction.class);
-
-    protected static String FISJZ_APPLICATIONID = PropertyManager.getProperty("application.id.530003");
-    protected static String FISJZ_BANK = PropertyManager.getProperty("bank.code.530003");
 
     @Autowired
     FsSysAreaConfigMapper areaConfigMapper;

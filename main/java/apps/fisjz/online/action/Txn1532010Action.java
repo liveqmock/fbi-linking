@@ -61,7 +61,8 @@ public class Txn1532010Action extends AbstractTxnAction {
     private void processThiredPartyTxn(LFixedLengthProtocol msg, TIA2010 tia) throws Exception {
         SeperatedTextDataFormat dataFormat;//与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
-        List rtnlist = service.queryNontaxPayment(getApplicationidByAreaCode(tia.getAreacode()),
+        List rtnlist = service.queryNontaxPayment(
+                getApplicationidByAreaCode(tia.getAreacode()),
                 getBankCodeByAreaCode(tia.getAreacode()),
                 tia.getYear(),
                 getFinorgByAreaCode(tia.getAreacode()),

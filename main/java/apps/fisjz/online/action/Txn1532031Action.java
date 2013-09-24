@@ -55,8 +55,8 @@ public class Txn1532031Action extends AbstractTxnAction {
         paramList.add(fbPaynotesInfo);
         logger.info("[1532031退付缴款确认] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
         List rtnlist = service.updateRefundNontaxPayment(
-                FISJZ_APPLICATIONID,
-                FISJZ_BANK,
+                getApplicationidByAreaCode(tia.getAreacode()),
+                getBankCodeByAreaCode(tia.getAreacode()),
                 tia.getYear(),
                 getFinorgByAreaCode(tia.getAreacode()),
                 paramList);

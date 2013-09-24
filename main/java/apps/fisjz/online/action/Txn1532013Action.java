@@ -66,8 +66,8 @@ public class Txn1532013Action extends AbstractTxnAction {
 
         logger.info("[1532013手工缴款书缴款] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
         List rtnlist = service.insertNontaxPayment(
-                FISJZ_APPLICATIONID,
-                FISJZ_BANK,
+                getApplicationidByAreaCode(tia.getAreacode()),
+                getBankCodeByAreaCode(tia.getAreacode()),
                 tia.getYear(),
                 getFinorgByAreaCode(tia.getAreacode()),
                 paramList);
