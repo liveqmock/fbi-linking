@@ -1,9 +1,9 @@
 package apps.fisjz.online.action;
 
 import apps.fisjz.domain.staring.T2010Request.TIA2010;
+import apps.fisjz.domain.staring.T2010Response.TOA2010;
 import apps.fisjz.domain.staring.T2010Response.TOA2010PaynotesInfo;
 import apps.fisjz.domain.staring.T2010Response.TOA2010PaynotesItem;
-import apps.fisjz.domain.staring.T2010Response.TOA2010;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import common.dataformat.SeperatedTextDataFormat;

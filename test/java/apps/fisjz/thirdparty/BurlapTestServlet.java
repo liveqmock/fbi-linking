@@ -61,8 +61,12 @@ public class BurlapTestServlet extends BurlapServlet {
         //返回成功信息
         List elements = new ArrayList();
         Map resultMsgMap = new HashMap();
+/*
         resultMsgMap.put("RESULT", "SUCCESS");
         resultMsgMap.put("MESSAGE", "成功信息...");
+*/
+        resultMsgMap.put("RESULT", "FAIL");
+        resultMsgMap.put("MESSAGE", "缴款书130000010002已确认收款，不能重复操作！");
         elements.add(resultMsgMap);
         return elements;
 

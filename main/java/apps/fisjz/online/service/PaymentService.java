@@ -1,14 +1,19 @@
 package apps.fisjz.online.service;
 
+import apps.fisjz.domain.staring.T2010Response.TOA2010PaynotesInfo;
+import apps.fisjz.domain.staring.T2010Response.TOA2010PaynotesItem;
 import apps.fisjz.repository.dao.FsJzfPaymentInfoMapper;
+import apps.fisjz.repository.dao.FsJzfPaymentItemMapper;
 import apps.fisjz.repository.model.FsJzfPaymentInfo;
 import apps.fisjz.repository.model.FsJzfPaymentInfoExample;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +31,28 @@ public class PaymentService {
 
     @Autowired
     FsJzfPaymentInfoMapper paymentInfoMapper;
+    @Autowired
+    FsJzfPaymentItemMapper paymentItemMapper;
+
+    public int processInitPaymentInfoAndPaymentItem(TOA2010PaynotesInfo paynotesInfo, List<TOA2010PaynotesItem> paynotesItems) throws InvocationTargetException, IllegalAccessException {
+        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
+
+        FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
+        example.createCriteria()
+                .andNotescodeEqualTo(paynotesInfo.getNotescode())
+                .andBilltypeEqualTo(paynotesInfo.getBilltype())
+                .andArchiveFlagEqualTo("0");
+
+        List<FsJzfPaymentInfo> recordList  = paymentInfoMapper.selectByExample(example);
+        if (recordList.size() == 0) {
+            BeanUtils.copyProperties(paynotesInfo, fsJzfPaymentInfo);
+            fsJzfPaymentInfo.setArchiveFlag("0");
+            paymentInfoMapper.insert(fsJzfPaymentInfo);
+            return 0;
+        }else{
+            return 1;
+        }
+    }
 
     //普通缴款书缴款 (先检查是否有重复记录)
     public int processPaymentPay(String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){

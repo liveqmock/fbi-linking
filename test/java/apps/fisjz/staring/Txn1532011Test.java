@@ -46,6 +46,7 @@ public class Txn1532011Test {
                     "|").getBytes();
 
 //            t.msgBody = ("|1|2|3|5300013092076|2013000000002|130000010002|VPR955|52000|00000022||||20130923|20130923|1|0|0|0.00||").getBytes();
+            t.msgBody = ("|000|530001|1111|2076|2013000000002|130000010002-2|VPR955|52000|00000022||||20130924|20130924|1|0|0|0.00|| ").getBytes();
 
             System.out.println("发送报文：" + new String(t.toByteArray()));
             //Socket socket = new Socket("10.22.0.45", 60001);
@@ -60,6 +61,7 @@ public class Txn1532011Test {
             System.out.println("返回报文：" + new String(bytes));
             os.close();
             socket.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

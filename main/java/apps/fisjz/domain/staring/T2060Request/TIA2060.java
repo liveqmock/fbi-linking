@@ -22,6 +22,12 @@ public class TIA2060 {
     @DataField(seq = 4)
     private String totalAmt; //总金额
 
+    @DataField(seq = 5)
+    private String startdate; //开始日期
+
+    @DataField(seq = 6)
+    private String enddate; //结束日期
+
 
     public String getYear() {
         return year;
@@ -53,5 +59,21 @@ public class TIA2060 {
 
     public void setTotalAmt(String totalAmt) {
         this.totalAmt = totalAmt;
+    }
+
+    public String getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(String startdate) {
+        this.startdate = startdate;
+    }
+
+    public String getEnddate() {
+        return enddate;
+    }
+
+    public void setEnddate(String enddate) {
+        this.enddate = enddate;
     }
 }

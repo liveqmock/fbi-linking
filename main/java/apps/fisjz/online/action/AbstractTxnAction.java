@@ -41,6 +41,11 @@ public abstract class AbstractTxnAction {
             if (result != null) {
                 if ("SUCCESS".equals(result.toUpperCase())) {
                     return true;
+                }else{ //特殊处理重复收款的情况
+                    String msg = (String) map.get("MESSAGE");
+                    if (msg.contains("已确认收款，不能重复操作！")) {
+                        return true;
+                    }
                 }
             }
         }

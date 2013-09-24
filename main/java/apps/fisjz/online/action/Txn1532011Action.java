@@ -57,7 +57,12 @@ public class Txn1532011Action extends AbstractTxnAction {
         //判断财政局响应结果
         if (getResponseResult(rtnlist)) { //缴款成功
             msg.rtnCode = "0000";
-            msg.msgBody =  "缴款成功".getBytes("GBK");
+            String rtnMsg = getResponseErrMsg(rtnlist);
+            if (rtnMsg == null) {
+                msg.msgBody =  "缴款成功".getBytes("GBK");
+            }else{
+                msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
+            }
         }else{ //缴款失败
             msg.rtnCode = "1000";
             msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
