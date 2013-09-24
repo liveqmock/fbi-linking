@@ -2,6 +2,7 @@ package apps.fisjz.online.action;
 
 import apps.fisjz.domain.financebureau.FbPaynotesInfo4Refund;
 import apps.fisjz.domain.staring.T2031Request.TIA2031;
+import apps.fisjz.enums.TxnRtnCode;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -41,7 +42,7 @@ public class Txn1532031Action extends AbstractTxnAction {
         BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
         int rtn = paymentService.processPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
         if (rtn == 1) {//重复退付缴款
-            msg.rtnCode = "0000";
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
             msg.msgBody =  "缴款退付确认成功(重复确认)".getBytes("GBK");
             return msg;
         }
@@ -57,10 +58,10 @@ public class Txn1532031Action extends AbstractTxnAction {
 
         //判断财政局响应结果
         if (getResponseResult(rtnlist)) { //缴款退付成功
-            msg.rtnCode = "0000";
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
             msg.msgBody =  "缴款退付成功".getBytes("GBK");
         }else{ //缴款失败
-            msg.rtnCode = "1003";
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
             msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
             return msg;
         }

@@ -1,6 +1,7 @@
 package apps.fisjz.online.action;
 
-import apps.fis.enums.TxnRtnCode;
+import apps.fisjz.PropertyManager;
+import apps.fisjz.enums.TxnRtnCode;
 import gateway.domain.LFixedLengthProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +12,8 @@ import java.util.Map;
 public abstract class AbstractTxnAction {
     private static Logger logger = LoggerFactory.getLogger(AbstractTxnAction.class);
 
-    protected static String FISJZ_APPLICATIONID = "";
-    protected static String FISJZ_BANK = "";
+    protected static String FISJZ_APPLICATIONID = PropertyManager.getProperty("application.id.530003");
+    protected static String FISJZ_BANK = PropertyManager.getProperty("bank.code.530003");
 
     public LFixedLengthProtocol run(LFixedLengthProtocol tia) {
         try {

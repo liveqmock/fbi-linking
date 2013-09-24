@@ -2,6 +2,7 @@ package apps.fisjz.online.action;
 
 import apps.fisjz.domain.financebureau.FbPaynotesInfo;
 import apps.fisjz.domain.staring.T2012Request.TIA2012;
+import apps.fisjz.enums.TxnRtnCode;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -50,10 +51,10 @@ public class Txn1532012Action extends AbstractTxnAction {
             FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
             BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
             paymentService.processPaymentPayAccount(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
-            msg.rtnCode = "0000";
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
             msg.msgBody =  "到帐确认成功".getBytes("GBK");
         }else{ //到帐确认失败
-            msg.rtnCode = "1001";
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
             msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
             return msg;
         }

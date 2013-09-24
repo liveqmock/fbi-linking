@@ -2,6 +2,7 @@ package apps.fisjz.online.action;
 
 import apps.fisjz.domain.financebureau.FbPaynotesInfo;
 import apps.fisjz.domain.staring.T2011Request.TIA2011;
+import apps.fisjz.enums.TxnRtnCode;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import apps.fisjz.online.service.PaymentService;
@@ -40,7 +41,7 @@ public class Txn1532011Action extends AbstractTxnAction {
         BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
         int rtn = paymentService.processPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
         if (rtn == 1) {//重复缴款
-            msg.rtnCode = "0000";
+            msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
             msg.msgBody =  "缴款成功(重复缴款)".getBytes("GBK");
             return msg;
         }
@@ -56,7 +57,7 @@ public class Txn1532011Action extends AbstractTxnAction {
 
         //判断财政局响应结果
         if (getResponseResult(rtnlist)) { //缴款成功
-            msg.rtnCode = "0000";
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
             String rtnMsg = getResponseErrMsg(rtnlist);
             if (rtnMsg == null) {
                 msg.msgBody =  "缴款成功".getBytes("GBK");
@@ -64,7 +65,7 @@ public class Txn1532011Action extends AbstractTxnAction {
                 msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
             }
         }else{ //缴款失败
-            msg.rtnCode = "1000";
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
             msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
             return msg;
         }

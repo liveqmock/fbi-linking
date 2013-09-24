@@ -72,5 +72,4 @@ public class Txn1532010Action extends AbstractTxnAction {
         msg.msgBody = result.getBytes();
         return msg;
     }
-
 }
