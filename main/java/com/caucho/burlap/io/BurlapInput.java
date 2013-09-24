@@ -1441,13 +1441,14 @@ public class BurlapInput extends AbstractBurlapInput {
     else if (ch < 0x80)
       return (char) ch;
     // TODO  GBK±àÂë
+/*
     else {
         int ch1 = read();
         //int v = ((ch1 & 0xff) << 8) + ch;
         byte[] b = {(byte)ch,(byte)ch1};
         return new String(b).charAt(0);
     }
-/*
+*/
     else if ((ch & 0xe0) == 0xc0) {
       int ch1 = read();
       int v = ((ch & 0x1f) << 6) + (ch1 & 0x3f);
@@ -1463,8 +1464,6 @@ public class BurlapInput extends AbstractBurlapInput {
     }
     else
       throw new BurlapProtocolException("bad utf-8 encoding");
-*/
-
   }
   
   /**
