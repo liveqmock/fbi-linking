@@ -15,7 +15,7 @@ public class TIA2012 {
     private String year;    //年度
 
     @DataField(seq = 2)
-    private String finorg;  //财政编码
+    private String areacode;  //财政编码
 
     @Link
     private TIA2012PaynotesInfo paynotesInfo;
@@ -28,12 +28,12 @@ public class TIA2012 {
         this.year = year;
     }
 
-    public String getFinorg() {
-        return finorg;
+    public String getAreacode() {
+        return areacode;
     }
 
-    public void setFinorg(String finorg) {
-        this.finorg = finorg;
+    public void setAreacode(String areacode) {
+        this.areacode = areacode;
     }
 
     public TIA2012PaynotesInfo getPaynotesInfo() {
@@ -48,7 +48,7 @@ public class TIA2012 {
     public String toString() {
         return "TIA2012{" +
                 "year='" + year + '\'' +
-                ", finorg='" + finorg + '\'' +
+                ", areacode='" + areacode + '\'' +
                 ", paynotesInfo=" + paynotesInfo +
                 '}';
     }

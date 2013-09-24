@@ -43,10 +43,6 @@
             <property name="ignoreQualifiersAtRuntime" value="true"/>
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
-        <table schema="fis" tableName="fs_jzf_act_txn">
-            <property name="ignoreQualifiersAtRuntime" value="true"/>
-            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>
         <table schema="fis" tableName="fs_jzf_base_bank">
             <property name="ignoreQualifiersAtRuntime" value="true"/>
         </table>
@@ -63,8 +59,10 @@
         <table schema="fis" tableName="fs_jzf_base_storageid">
             <property name="ignoreQualifiersAtRuntime" value="true"/>
         </table>
+        <table schema="fis" tableName="fs_sys_area_config">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+        </table>
     -->
-
 
     </context>
 </generatorConfiguration>

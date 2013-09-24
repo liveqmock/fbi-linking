@@ -41,7 +41,7 @@ public class Txn1532013Action extends AbstractTxnAction {
         //业务逻辑处理(检查处理重复数据)
         FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
         BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-        int rtn = paymentService.processPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
+        int rtn = paymentService.processPaymentPay(tia.getAreacode(), msg.branchID, msg.tellerID, fsJzfPaymentInfo);
         if (rtn == 1) {//重复缴款
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
             msg.msgBody =  "缴款成功(重复缴款)".getBytes("GBK");
@@ -65,7 +65,12 @@ public class Txn1532013Action extends AbstractTxnAction {
         paramList.add(fbPaynotesInfo);
 
         logger.info("[1532013手工缴款书缴款] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
-        List rtnlist = service.insertNontaxPayment(FISJZ_APPLICATIONID, FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
+        List rtnlist = service.insertNontaxPayment(
+                FISJZ_APPLICATIONID,
+                FISJZ_BANK,
+                tia.getYear(),
+                getFinorgByAreaCode(tia.getAreacode()),
+                paramList);
 
         //判断财政局响应结果
         if (getResponseResult(rtnlist)) { //缴款成功

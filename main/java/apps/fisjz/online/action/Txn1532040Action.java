@@ -39,7 +39,7 @@ public class Txn1532040Action extends AbstractTxnAction {
         //业务逻辑处理(检查处理重复数据)
         FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
         BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-        int rtn = paymentService.processPaymentPay(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
+        int rtn = paymentService.processPaymentPay(tia.getAreacode(), msg.branchID, msg.tellerID, fsJzfPaymentInfo);
         if (rtn == 1) {//重复缴款
             msg.rtnCode = "0000";
             msg.msgBody =  "缴款冲销成功(重复冲销)".getBytes("GBK");
@@ -53,7 +53,12 @@ public class Txn1532040Action extends AbstractTxnAction {
         BeanUtils.copyProperties(fbPaynotesInfo, tia.getPaynotesInfo());
         paramList.add(fbPaynotesInfo);
         logger.info("[1532040缴款冲销] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
-        List rtnlist = service.cancelNontaxPayment(FISJZ_APPLICATIONID, FISJZ_BANK, tia.getYear(), tia.getFinorg(), paramList);
+        List rtnlist = service.cancelNontaxPayment(
+                FISJZ_APPLICATIONID,
+                FISJZ_BANK,
+                tia.getYear(),
+                getFinorgByAreaCode(tia.getAreacode()),
+                paramList);
 
         //判断财政局响应结果
         if (getResponseResult(rtnlist)) { //缴款成功

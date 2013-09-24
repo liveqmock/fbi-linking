@@ -36,7 +36,11 @@ public class Txn1532010Action extends AbstractTxnAction {
 
         //与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
-        List rtnlist = service.queryNontaxPayment(FISJZ_APPLICATIONID,FISJZ_BANK, tia.getYear(), tia.getFinorg(),tia.getNotescode(),tia.getCheckcode(),tia.getBilltype());
+        List rtnlist = service.queryNontaxPayment(getApplicationidByAreaCode(tia.getAreacode()),
+                getBankCodeByAreaCode(tia.getAreacode()),
+                tia.getYear(),
+                getFinorgByAreaCode(tia.getAreacode()),
+                tia.getNotescode(),tia.getCheckcode(),tia.getBilltype());
 
         //判断财政局响应结果
         if (!getResponseResult(rtnlist)) {

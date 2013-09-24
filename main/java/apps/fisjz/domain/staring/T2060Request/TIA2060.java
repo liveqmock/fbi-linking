@@ -14,7 +14,7 @@ public class TIA2060 {
     private String year;    //年度
 
     @DataField(seq = 2)
-    private String finorg;  //财政编码
+    private String areacode;  //财政编码
 
     @DataField(seq = 3)
     private String totalNum; //记录数
@@ -37,12 +37,12 @@ public class TIA2060 {
         this.year = year;
     }
 
-    public String getFinorg() {
-        return finorg;
+    public String getAreacode() {
+        return areacode;
     }
 
-    public void setFinorg(String finorg) {
-        this.finorg = finorg;
+    public void setAreacode(String areacode) {
+        this.areacode = areacode;
     }
 
     public String getTotalNum() {

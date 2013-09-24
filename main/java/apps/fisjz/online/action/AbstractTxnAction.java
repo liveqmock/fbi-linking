@@ -2,9 +2,12 @@ package apps.fisjz.online.action;
 
 import apps.fisjz.PropertyManager;
 import apps.fisjz.enums.TxnRtnCode;
+import apps.fisjz.repository.dao.FsSysAreaConfigMapper;
+import apps.fisjz.repository.model.FsSysAreaConfig;
 import gateway.domain.LFixedLengthProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
@@ -15,17 +18,22 @@ public abstract class AbstractTxnAction {
     protected static String FISJZ_APPLICATIONID = PropertyManager.getProperty("application.id.530003");
     protected static String FISJZ_BANK = PropertyManager.getProperty("bank.code.530003");
 
+    @Autowired
+    FsSysAreaConfigMapper areaConfigMapper;
+
     public LFixedLengthProtocol run(LFixedLengthProtocol tia) {
         try {
             tia.rtnCode = "0000";
 
             //特殊处理：去掉报文的body区的首尾分隔符
             int length = tia.msgBody.length;
+/*
             if (length > 2) {
                 byte[] buf = new byte[length - 2];
                 System.arraycopy(tia.msgBody, 1, buf, 0, buf.length);
                 tia.msgBody = buf;
             }
+*/
             return process(tia);
         } catch (Exception e) {
             logger.error("Action业务处理错误。", e);
@@ -63,5 +71,18 @@ public abstract class AbstractTxnAction {
             }
         }
         return "";
+    }
+
+    protected  String getApplicationidByAreaCode(String areaCode){
+        FsSysAreaConfig config = areaConfigMapper.selectByPrimaryKey(areaCode);
+        return config.getAppId();
+    }
+    protected  String getBankCodeByAreaCode(String areaCode){
+        FsSysAreaConfig config = areaConfigMapper.selectByPrimaryKey(areaCode);
+        return config.getBankCode();
+    }
+    protected  String getFinorgByAreaCode(String areaCode){
+        FsSysAreaConfig config = areaConfigMapper.selectByPrimaryKey(areaCode);
+        return config.getFinorgCode();
     }
 }

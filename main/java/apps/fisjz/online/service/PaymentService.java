@@ -55,7 +55,7 @@ public class PaymentService {
     }
 
     //普通缴款书缴款 (先检查是否有重复记录)
-    public int processPaymentPay(String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
+    public int processPaymentPay(String areaCode, String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
         FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
         example.createCriteria()
                 .andNotescodeEqualTo(paymentInfo.getNotescode())
@@ -76,11 +76,11 @@ public class PaymentService {
             record.setArchiveOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
             paymentInfoMapper.updateByPrimaryKey(record);
             //插入新纪录
-            insertPaymentPay(branchId,tellerId,paymentInfo);
+            insertPaymentPay(areaCode, branchId,tellerId,paymentInfo);
             return 1;
         }else{
             //插入新纪录
-            insertPaymentPay(branchId,tellerId,paymentInfo);
+            insertPaymentPay(areaCode, branchId,tellerId,paymentInfo);
         }
         return 0;
     }
@@ -129,7 +129,7 @@ public class PaymentService {
 
 
     //=============
-    private void insertPaymentPay(String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
+    private void insertPaymentPay(String areaCode,String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
         paymentInfo.setOperBankid(branchId);
         paymentInfo.setOperId(tellerId);
         paymentInfo.setOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
@@ -145,6 +145,8 @@ public class PaymentService {
 
         //正常记录标志
         paymentInfo.setArchiveFlag("0");
+
+        paymentInfo.setAreaCode(areaCode);
         paymentInfoMapper.insert(paymentInfo);
     }
 }
