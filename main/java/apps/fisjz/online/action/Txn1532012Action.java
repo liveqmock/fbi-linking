@@ -55,7 +55,7 @@ public class Txn1532012Action extends AbstractTxnAction {
             //业务逻辑处理
             FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
             BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-            paymentService.processPaymentPayAccount(msg.branchID, msg.tellerID, fsJzfPaymentInfo);
+            paymentService.processPaymentPayAccount(tia.getAreacode(),msg.branchID, msg.tellerID, fsJzfPaymentInfo);
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
             msg.msgBody =  "到帐确认成功".getBytes("GBK");
         }else{ //到帐确认失败
