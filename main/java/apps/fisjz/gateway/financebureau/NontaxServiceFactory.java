@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
  */
 public class NontaxServiceFactory {
     private static NontaxServiceFactory instance = new NontaxServiceFactory();
-    private static BurlapProxyFactory burlapProxyFactory = new BurlapProxyFactory();
+    private static BurlapProxyFactory burlapProxyFactory = new NontaxBurlapProxyFactory();
 
 
     public static NontaxServiceFactory getInstance() {

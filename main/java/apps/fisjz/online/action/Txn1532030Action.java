@@ -4,6 +4,7 @@ import apps.fisjz.domain.staring.T2030Request.TIA2030;
 import apps.fisjz.domain.staring.T2030Response.TOA2030;
 import apps.fisjz.domain.staring.T2030Response.TOA2030PaynotesInfo;
 import apps.fisjz.domain.staring.T2030Response.TOA2030PaynotesItem;
+import apps.fisjz.enums.TxnRtnCode;
 import apps.fisjz.gateway.financebureau.NontaxBankService;
 import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
 import common.dataformat.SeperatedTextDataFormat;
@@ -31,7 +32,14 @@ public class Txn1532030Action extends AbstractTxnAction {
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
         //解析特色平台请求报文体
         SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2030Request");
-        TIA2030 tia = (TIA2030) dataFormat.fromMessage(new String(msg.msgBody), "TIA2030");
+        TIA2030 tia = null;
+        try {
+            tia = (TIA2030) dataFormat.fromMessage(new String(msg.msgBody), "TIA2030");
+        } catch (Exception e) {
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+            msg.msgBody =  "报文解析错误.".getBytes("GBK");
+            return msg;
+        }
         logger.info("[1532030退付缴款书查询] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 退付缴款书编号:" + tia.getRefundapplycode());
 
         //与财政局通讯

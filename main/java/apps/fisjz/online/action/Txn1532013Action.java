@@ -35,7 +35,14 @@ public class Txn1532013Action extends AbstractTxnAction {
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
         //解析特色平台请求报文体
         SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2013Request");
-        TIA2013 tia = (TIA2013) dataFormat.fromMessage(new String(msg.msgBody), "TIA2013");
+        TIA2013 tia = null;
+        try {
+            tia = (TIA2013) dataFormat.fromMessage(new String(msg.msgBody), "TIA2013");
+        } catch (Exception e) {
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+            msg.msgBody =  "报文解析错误.".getBytes("GBK");
+            return msg;
+        }
         logger.info("[1532013手工缴款书缴款] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 票据编号:" + tia.getPaynotesInfo().getNotescode());
 
         //业务逻辑处理(检查处理重复数据)

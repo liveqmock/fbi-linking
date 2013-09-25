@@ -21,27 +21,61 @@ public class BurlapTestServlet extends BurlapServlet {
         return elements;
     }
 
-    public List queryNontaxPayment(String applicationid, String bank, String year,
-                                   String finorg, String notescode, String checkcode, String billtype) {
+    public List queryNontaxPayment(String applicationid, String bank, String year, String finorg,
+                                   String notescode, String checkcode, String billtype) {
         List elements = new ArrayList();
 
         Map resultContentMap = new HashMap();
-        resultContentMap.put("billid", "main1111");
-        resultContentMap.put("paynotescode", "123456");
-        resultContentMap.put("notescode", "222");
-        resultContentMap.put("checkcode", "qwer");
+/*
+        resultContentMap.put("billtype", "1");
+        resultContentMap.put("billid", "BILL001");
+        resultContentMap.put("paynotescode", "JKSDH001");
+        resultContentMap.put("notescode", "PJBH001");
+        resultContentMap.put("checkcode", "YZM001");
         resultContentMap.put("amt", "123.45");
         resultContentMap.put("noteskindcode", "01");
         resultContentMap.put("noteskindname", null); //TODO
 
         List detailsList = new ArrayList();
         Map detailMap = new HashMap();
-        detailMap.put("billid", "sub111");
-        detailMap.put("mainid", "main1111");
+        detailMap.put("billid", "SUB_BILL001");
+        detailMap.put("mainid", "BILL001");
+        detailMap.put("amount", "1");
+        detailMap.put("amt", "1.23");
         detailsList.add(detailMap);
         detailMap = new HashMap();
-        detailMap.put("billid", "sub222");
-        detailMap.put("mainid", "main2222");
+        detailMap.put("billid", "SUB_BILL002");
+        detailMap.put("mainid", "BILL001");
+        detailMap.put("amount", "2");
+        detailMap.put("amt", "2.23");
+        detailsList.add(detailMap);
+
+*/
+        resultContentMap.put("billid", "2075");
+        resultContentMap.put("paynotescode", "2013000000001");
+        resultContentMap.put("notescode", "130000010001");
+        resultContentMap.put("checkcode", "FM5EH6");
+        resultContentMap.put("amt", "1600");
+        resultContentMap.put("noteskindcode", "00000022");
+        resultContentMap.put("bankrecdate", "20130924");
+        resultContentMap.put("bankacctdate", "20130924");
+        resultContentMap.put("ispreaudit", "1");
+        resultContentMap.put("recfeeflag", "0");
+        resultContentMap.put("billtype", "0");
+        resultContentMap.put("latefee", "0.00");
+
+        List detailsList = new ArrayList();
+        Map detailMap = new HashMap();
+        detailMap.put("billid", "SUB_BILL001");
+        detailMap.put("mainid", "2075");
+        detailMap.put("amount", "1");
+        detailMap.put("amt", "1000");
+        detailsList.add(detailMap);
+        detailMap = new HashMap();
+        detailMap.put("billid", "SUB_BILL002");
+        detailMap.put("mainid", "2075");
+        detailMap.put("amount", "2");
+        detailMap.put("amt", "600");
         detailsList.add(detailMap);
 
         resultContentMap.put("details", detailsList);
@@ -51,7 +85,8 @@ public class BurlapTestServlet extends BurlapServlet {
         //-
         Map resultMsgMap = new HashMap();
         resultMsgMap.put("RESULT", "SUCCESS");
-        resultMsgMap.put("MESSAGE", "成功信息...");
+        //resultMsgMap.put("MESSAGE", new String("成功信息.....".getBytes("GBK"),"UTF-8"));
+        resultMsgMap.put("MESSAGE", "...");
         elements.add(resultMsgMap);
 
         return elements;

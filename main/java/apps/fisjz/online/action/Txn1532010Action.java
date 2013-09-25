@@ -38,12 +38,23 @@ public class Txn1532010Action extends AbstractTxnAction {
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
         //解析特色平台请求报文体
         SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2010Request");
-        TIA2010 tia = (TIA2010) dataFormat.fromMessage(new String(msg.msgBody), "TIA2010");
-        logger.info("[1532010缴款书信息查询] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 缴款书编号:" + tia.getNotescode());
+        TIA2010 tia = null;
+        try {
+            tia = (TIA2010) dataFormat.fromMessage(new String(msg.msgBody), "TIA2010");
+        } catch (Exception e) {
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+            msg.msgBody =  "报文解析错误.".getBytes("GBK");
+            return msg;
+        }
+
+        String areacode = tia.getAreacode();
+        String notescode = tia.getNotescode();
+        String checkcode = tia.getCheckcode();
+        String billtype = tia.getBilltype();
+        logger.info("[1532010缴款书信息查询] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 票据编号:" + notescode);
 
         //查找本地记录
-        FsJzfPaymentInfo fsJzfPaymentInfo = paymentService.findLocalDbPaymentInfo(tia.getAreacode(),
-                tia.getNotescode(), tia.getCheckcode(), tia.getBilltype());
+        FsJzfPaymentInfo fsJzfPaymentInfo = paymentService.findLocalDbPaymentInfo(areacode, notescode, checkcode, billtype);
         if (fsJzfPaymentInfo == null) {//本地未查到信息
             processThiredPartyTxn(msg, tia);
         } else {
@@ -61,12 +72,19 @@ public class Txn1532010Action extends AbstractTxnAction {
     private void processThiredPartyTxn(LFixedLengthProtocol msg, TIA2010 tia) throws Exception {
         SeperatedTextDataFormat dataFormat;//与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
-        List rtnlist = service.queryNontaxPayment(
-                getApplicationidByAreaCode(tia.getAreacode()),
-                getBankCodeByAreaCode(tia.getAreacode()),
-                tia.getYear(),
-                getFinorgByAreaCode(tia.getAreacode()),
-                tia.getNotescode(), tia.getCheckcode(), tia.getBilltype());
+        List rtnlist = null;
+        try {
+            rtnlist = service.queryNontaxPayment(
+                    getApplicationidByAreaCode(tia.getAreacode()),
+                    getBankCodeByAreaCode(tia.getAreacode()),
+                    tia.getYear(),
+                    getFinorgByAreaCode(tia.getAreacode()),
+                    tia.getNotescode(),
+                    tia.getCheckcode(),
+                    tia.getBilltype());
+        } catch (Exception e) {
+            throw new RuntimeException("与财政局连接失败.", e);
+        }
 
         //判断财政局响应结果
         if (!getResponseResult(rtnlist)) {

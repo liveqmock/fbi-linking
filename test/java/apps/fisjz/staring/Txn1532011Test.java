@@ -24,30 +24,50 @@ public class Txn1532011Test {
             t.serialNo = "SPDB" + t.txnTime;
 
 
-            t.msgBody = ("|2013" +
-                    "|CZBM" +
-                    "|BANKNUM" +
-                    "|BILLID" +
-                    "|PAYNOTESCODE" +
-                    "|NOTESCODE" +
-                    "|CHECKCODE" +
-                    "|123.45" +
-                    "|NOTESKINDCODE" +
-                    "|NOTESKINDNAME" +
-                    "|AGENTBANKCODE" +
-                    "|AGENTBANKNAME" +
-                    "|BANKRECDATE" +
-                    "|BANKACCTDATE" +
-                    "|ISPREAUDIT" +
-                    "|RECFEEFLAG" +
-                    "|BILLTYPE" +
-                    "|LATEFEE" +
-                    "|BANKNOTESCODE" +
+            t.msgBody = ("|2013" +      //year
+                    "|CZBM" +           //Area_code
+                    "|BANKNUM" +        //BANKNUM
+                    "|BILLID" +         //BILLID
+                    "|PAYNOTESCODE" +   //PAYNOTESCODE
+                    "|NOTESCODE" +      //NOTESCODE
+                    "|CHECKCODE" +      //CHECKCODE
+                    "|123.45" +         //amt
+                    "|NOTESKINDCODE" +  //NOTESKINDCODE
+                    "|NOTESKINDNAME" +  //NOTESKINDNAME
+                    "|AGENTBANKCODE" +  //AGENTBANKCODE
+                    "|AGENTBANKNAME" +  //AGENTBANKNAME
+                    "|BANKRECDATE" +    //BANKRECDATE
+                    "|BANKACCTDATE" +   //BANKACCTDATE
+                    "|ISPREAUDIT" +     //ISPREAUDIT
+                    "|RECFEEFLAG" +     //RECFEEFLAG
+                    "|BILLTYPE" +       //BILLTYPE
+                    "|LATEFEE" +        //LATEFEE
+                    "|BANKNOTESCODE" +  //BANKNOTESCODE
+                    "|").getBytes();
+            t.msgBody = ("|2013" +      //year
+                    "|530003" +           //Area_code
+                    "|3608" +        //BANKNUM
+                    "|2075" +         //BILLID
+                    "|2013000000001" +   //PAYNOTESCODE
+                    "|130000010001" +      //NOTESCODE
+                    "|FM5EH6" +      //CHECKCODE
+                    "|1600" +         //amt
+                    "|00000022" +  //NOTESKINDCODE
+                    "|" +  //NOTESKINDNAME
+                    "|" +  //AGENTBANKCODE
+                    "|" +  //AGENTBANKNAME
+                    "|20130924" +    //BANKRECDATE
+                    "|20130924" +   //BANKACCTDATE
+                    "|1" +     //ISPREAUDIT
+                    "|0" +     //RECFEEFLAG
+                    "|0" +       //BILLTYPE
+                    "|0.00" +        //LATEFEE
+                    "|" +  //BANKNOTESCODE
                     "|").getBytes();
 
 //            t.msgBody = ("|1|2|3|5300013092076|2013000000002|130000010002|VPR955|52000|00000022||||20130923|20130923|1|0|0|0.00||").getBytes();
-            t.msgBody = ("2013|530001|2702|2076|2013000000002|130000010002|VPR955|52000|00000022||106001|建设银行胶州市支行|20130924|20130924|1|0|0|0.00||").getBytes();
-//            t.msgBody = ("2013|530001|3608|2075|2013000000001|130000010001|FM5EH6|1600|00000022||||20130924|20130924|1|0|0|0.00||").getBytes();
+//            t.msgBody = ("2013|530001|2702|2076|2013000000002|130000010002|VPR955|52000|00000022||106001|建设银行胶州市支行|20130924|20130924|1|0|0|0.00||").getBytes();
+//            t.msgBody = ("2013|530003|3608|2075|2013000000001|130000010001|FM5EH6|1600|00000022||||20130924|20130924|1|0|0|0.00||").getBytes();
 
             System.out.println("发送报文：" + new String(t.toByteArray()));
             //Socket socket = new Socket("10.22.0.45", 60001);

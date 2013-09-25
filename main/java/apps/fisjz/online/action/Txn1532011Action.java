@@ -33,7 +33,14 @@ public class Txn1532011Action extends AbstractTxnAction {
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
         // 解析特色平台请求报文体
         SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2011Request");
-        TIA2011 tia = (TIA2011)dataFormat.fromMessage(new String(msg.msgBody), "TIA2011");
+        TIA2011 tia = null;
+        try {
+            tia = (TIA2011)dataFormat.fromMessage(new String(msg.msgBody), "TIA2011");
+        } catch (Exception e) {
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+            msg.msgBody =  "报文解析错误.".getBytes("GBK");
+            return msg;
+        }
         logger.info("[1532011缴款书缴款] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 票据编号:" + tia.getPaynotesInfo().getNotescode());
 
         //业务逻辑处理
@@ -60,6 +67,7 @@ public class Txn1532011Action extends AbstractTxnAction {
                 paramList);
 
         //判断财政局响应结果
+        //TODO 检查明细
         if (getResponseResult(rtnlist)) { //缴款成功
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
             String rtnMsg = getResponseErrMsg(rtnlist);
@@ -74,5 +82,10 @@ public class Txn1532011Action extends AbstractTxnAction {
             return msg;
         }
         return msg;
+    }
+
+    //自动发起缴款确认交易
+    private void processPayConfirmTxn(){
+
     }
 }

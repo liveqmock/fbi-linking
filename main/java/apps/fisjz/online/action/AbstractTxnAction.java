@@ -23,15 +23,16 @@ public abstract class AbstractTxnAction {
         try {
             tia.rtnCode = "0000";
 
+/*
             //特殊处理：去掉报文的body区的首尾分隔符
             int length = tia.msgBody.length;
-/*
             if (length > 2) {
                 byte[] buf = new byte[length - 2];
                 System.arraycopy(tia.msgBody, 1, buf, 0, buf.length);
                 tia.msgBody = buf;
             }
 */
+
             return process(tia);
         } catch (Exception e) {
             logger.error("Action业务处理错误。", e);
@@ -73,14 +74,23 @@ public abstract class AbstractTxnAction {
 
     protected  String getApplicationidByAreaCode(String areaCode){
         FsSysAreaConfig config = areaConfigMapper.selectByPrimaryKey(areaCode);
+        if (config == null) {
+            throw new RuntimeException("获取应用ID错,地区码=" + areaCode);
+        }
         return config.getAppId();
     }
     protected  String getBankCodeByAreaCode(String areaCode){
         FsSysAreaConfig config = areaConfigMapper.selectByPrimaryKey(areaCode);
+        if (config == null) {
+            throw new RuntimeException("获取银行码错,地区码=" + areaCode);
+        }
         return config.getBankCode();
     }
     protected  String getFinorgByAreaCode(String areaCode){
         FsSysAreaConfig config = areaConfigMapper.selectByPrimaryKey(areaCode);
+        if (config == null) {
+            throw new RuntimeException("获取财政编码错,地区码=" + areaCode);
+        }
         return config.getFinorgCode();
     }
 }
