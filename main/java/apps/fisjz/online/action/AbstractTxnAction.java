@@ -30,7 +30,7 @@ public abstract class AbstractTxnAction {
                 isBizErr = true;
                 throw new RuntimeException(new String(toa.msgBody, "GBK"));
             }else{
-                return process(tia);
+                return toa;
             }
         } catch (Exception e) {
             if (!isBizErr) {

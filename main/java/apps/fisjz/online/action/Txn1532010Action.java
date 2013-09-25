@@ -123,7 +123,4 @@ public class Txn1532010Action extends AbstractTxnAction {
         msg.msgBody = result.getBytes();
     }
 
-    private void processResponseToStaring(LFixedLengthProtocol msg, TIA2010 tia) throws Exception {
-
-    }
 }

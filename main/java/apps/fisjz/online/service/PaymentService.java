@@ -2,6 +2,8 @@ package apps.fisjz.online.service;
 
 import apps.fisjz.domain.staring.T2010Response.TOA2010PaynotesInfo;
 import apps.fisjz.domain.staring.T2010Response.TOA2010PaynotesItem;
+import apps.fisjz.domain.staring.T2030Response.TOA2030PaynotesInfo;
+import apps.fisjz.domain.staring.T2030Response.TOA2030PaynotesItem;
 import apps.fisjz.repository.dao.FsJzfPaymentInfoMapper;
 import apps.fisjz.repository.dao.FsJzfPaymentItemMapper;
 import apps.fisjz.repository.model.FsJzfPaymentInfo;
@@ -35,6 +37,8 @@ public class PaymentService {
     @Autowired
     FsJzfPaymentItemMapper paymentItemMapper;
 
+    //--------缴款交易----------------------
+    //缴款查询
     public FsJzfPaymentInfo findLocalDbPaymentInfo(String areaCode, String notesCode, String checkCode,String billType){
         FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
         example.createCriteria()
@@ -107,7 +111,7 @@ public class PaymentService {
             FsJzfPaymentInfo record = recordList.get(0);
             if ("0".equals(record.getFbBookFlag())) { //初始记录
                 //更新
-                processPaymentInfo_Pay(areaCode, branchId, tellerId, record);
+                stuffPaymentInfoBean_pay(areaCode, branchId, tellerId, record);
                 paymentInfoMapper.updateByPrimaryKey(record);
             } else { //属于重复缴款，则进行归档处理，用于自动冲正
                 //更新重复记录为已归档记录
@@ -118,7 +122,7 @@ public class PaymentService {
                 record.setArchiveOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
                 paymentInfoMapper.updateByPrimaryKey(record);
                 //插入新纪录
-                processPaymentInfo_Pay(areaCode, branchId, tellerId, paymentInfo);
+                stuffPaymentInfoBean_pay(areaCode, branchId, tellerId, paymentInfo);
                 paymentInfoMapper.insert(paymentInfo);
             }
         }else{
@@ -153,25 +157,65 @@ public class PaymentService {
         paymentInfoMapper.updateByPrimaryKey(record);
     }
 
-    //退付缴款书确认
-    public void processRefundPaymentPay(String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
-        paymentInfo.setOperBankid(branchId);
-        paymentInfo.setOperId(tellerId);
-        paymentInfo.setOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
-        paymentInfo.setOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
 
-        //主机记账成功
-        paymentInfo.setHostBookFlag("1");
-        paymentInfo.setHostChkFlag("0");
-
-        //财政记账成功
-        paymentInfo.setFbBookFlag("1");
-        paymentInfo.setFbChkFlag("0");
-        paymentInfoMapper.insert(paymentInfo);
+    //--------退付交易----------------------
+    //退付查询 :检查记录是否已存在
+    public FsJzfPaymentInfo findLocalDbPaymentInfo_refund(String areaCode, String refundapplycode, String notesCode){
+        FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
+        example.createCriteria()
+                .andRefundapplycodeEqualTo(refundapplycode)
+                .andNotescodeEqualTo(notesCode)
+                .andAreaCodeEqualTo(areaCode)
+                .andArchiveFlagEqualTo("0");
+        List<FsJzfPaymentInfo> recordList  = paymentInfoMapper.selectByExample(example);
+        if (recordList.size() == 1) {
+            return recordList.get(0);
+        }else if (recordList.size() == 0) {
+            return null;
+        } else {
+            throw new RuntimeException("重复记录！");
+        }
     }
 
+    //退付查询: 根据财政返回的数据初始化缴款书主信息和子项目信息
+    public int initPaymentInfoAndPaymentItem_refund(String areaCode, String branchId, String tellerId,
+                                             TOA2030PaynotesInfo paynotesInfo,
+                                             List<TOA2030PaynotesItem> paynotesItems) throws Exception {
 
-    //=============
+        FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
+        example.createCriteria()
+                .andRefundapplycodeEqualTo(paynotesInfo.getRefundapplycode())
+                .andNotescodeEqualTo(paynotesInfo.getNotescode())
+                .andAreaCodeEqualTo(areaCode)
+                .andArchiveFlagEqualTo("0");
+
+        List<FsJzfPaymentInfo> recordList  = paymentInfoMapper.selectByExample(example);
+        if (recordList.size() == 0) {
+            //初始化主表
+            FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
+            BeanUtils.copyProperties(fsJzfPaymentInfo, paynotesInfo);
+            fsJzfPaymentInfo.setBilltype("R");  //退付表单标志（自定义）
+            insertPaymentInfo_init(areaCode, branchId, tellerId, fsJzfPaymentInfo);
+
+            //初始化子项目明细表
+            FsJzfPaymentItemExample itemExample = new FsJzfPaymentItemExample();
+            itemExample.createCriteria().andMainidEqualTo(fsJzfPaymentInfo.getBillid());
+            List<FsJzfPaymentItem> itemList = paymentItemMapper.selectByExample(itemExample);
+            if (itemList.size() > 0) {
+                throw new RuntimeException("此BillId下的子项目信息已存在.");
+            }
+            for (TOA2030PaynotesItem paynotesItem : paynotesItems) {
+                FsJzfPaymentItem fsJzfPaymentItem = new FsJzfPaymentItem();
+                BeanUtils.copyProperties(fsJzfPaymentItem, paynotesItem);
+                paymentItemMapper.insert(fsJzfPaymentItem);
+            }
+            return 0; //初始化
+        }else{
+            return 1;  //已存在
+        }
+    }
+
+    //=======private method=========================================
 
     //查询时初始化记录
     private void insertPaymentInfo_init(String areaCode, String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
@@ -193,8 +237,8 @@ public class PaymentService {
         paymentInfoMapper.insert(paymentInfo);
     }
 
-    //缴款
-    private void processPaymentInfo_Pay(String areaCode, String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
+    //PaymentInfoBean 填写基本信息 for 初始记账
+    private void stuffPaymentInfoBean_pay(String areaCode, String branchId, String tellerId, FsJzfPaymentInfo paymentInfo){
         paymentInfo.setOperBankid(branchId);
         paymentInfo.setOperId(tellerId);
         paymentInfo.setOperDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
