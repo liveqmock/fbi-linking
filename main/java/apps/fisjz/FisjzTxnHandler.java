@@ -18,7 +18,7 @@ public class FisjzTxnHandler extends TxnHandler {
             AbstractTxnAction txnAction = (AbstractTxnAction) AppsStartManager.getBean(tia.appID.trim().toLowerCase(), "txn" + tia.txnCode.trim() + "Action");
             return txnAction.run(tia);
         } catch (Exception e) {
-            logger.error("交易失败,", e);
+            //logger.error("交易失败,", e);
             throw new RuntimeException(e.getMessage());
         }
     }

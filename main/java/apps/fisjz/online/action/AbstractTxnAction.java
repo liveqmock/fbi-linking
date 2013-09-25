@@ -20,22 +20,22 @@ public abstract class AbstractTxnAction {
 
     @Transactional
     public LFixedLengthProtocol run(LFixedLengthProtocol tia) {
+        boolean isBizErr = false;
         try {
             tia.rtnCode = "0000";
 
-/*
-            //特殊处理：去掉报文的body区的首尾分隔符
-            int length = tia.msgBody.length;
-            if (length > 2) {
-                byte[] buf = new byte[length - 2];
-                System.arraycopy(tia.msgBody, 1, buf, 0, buf.length);
-                tia.msgBody = buf;
+            //事务处理：若非成功交易，即回滚
+            LFixedLengthProtocol toa = process(tia);
+            if (!TxnRtnCode.TXN_EXECUTE_SECCESS.getCode().equals(toa.rtnCode)) {
+                isBizErr = true;
+                throw new RuntimeException(new String(toa.msgBody, "GBK"));
+            }else{
+                return process(tia);
             }
-*/
-
-            return process(tia);
         } catch (Exception e) {
-            logger.error("Action业务处理错误。", e);
+            if (!isBizErr) {
+                logger.error("Action业务处理错误。", e);
+            }
             throw new RuntimeException(e.getMessage() == null ? TxnRtnCode.TXN_EXECUTE_FAILED.toRtnMsg() : e.getMessage());
         }
     }

@@ -79,10 +79,9 @@ public class Txn1532011Action extends AbstractTxnAction {
                     !fbPaynotesInfo.getPaynotescode().equals(respInfo.getPaynotescode()) ||
                     !fbPaynotesInfo.getNotescode().equals(respInfo.getNotescode())
                     ) {
-//                msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-//                msg.msgBody = "缴款交易失败!明细核对不符!".getBytes("GBK");
-//                return msg;
-                throw new RuntimeException("缴款交易失败!明细核对不符!");
+                msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+                msg.msgBody = "缴款交易失败!明细核对不符!".getBytes("GBK");
+                return msg;
             }
 
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
@@ -95,8 +94,9 @@ public class Txn1532011Action extends AbstractTxnAction {
             //自动发起缴款确认交易
             rtnlist = processPayConfirmTxn(msg, tia);
             if (!getResponseResult(rtnlist)) {
-                rtnMsg = getResponseErrMsg(rtnlist);
-                throw new RuntimeException("缴款到账确认交易失败!" + rtnMsg);
+                msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+                msg.msgBody = getResponseErrMsg(rtnlist).getBytes("GBK");
+                return msg;
             }
         } else { //缴款失败
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();

@@ -42,7 +42,7 @@ public class ServerChannelHandler extends SimpleChannelHandler {
             me.getChannel().write(toa);
         } catch (Exception e) {
             String exmsg = e.getMessage();
-            logger.error("交易异常." + exmsg, e);
+            //logger.error("交易异常." + exmsg, e);
             if (toa == null) {
                 toa = new LFixedLengthProtocol();
                 toa.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
