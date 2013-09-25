@@ -2,6 +2,7 @@ package apps.fisjz.thirdparty;
 
 import com.caucho.burlap.server.BurlapServlet;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +93,30 @@ public class BurlapTestServlet extends BurlapServlet {
         return elements;
     }
 
-    public List updateNontaxPayment(String applicationid, String bank, String year, String finorg, List paramList){
+    //缴款
+    public List updateNontaxPayment(String applicationid, String bank, String year, String finorg, List paramList) throws UnsupportedEncodingException {
+        //返回成功信息
+        List elements = new ArrayList();
+
+        Map resultContentMap = new HashMap();
+        resultContentMap.put("billid", "2076");
+        resultContentMap.put("paynotescode", "2013000000001");
+        resultContentMap.put("notescode", "130000010001");
+        elements.add(resultContentMap);
+        Map resultMsgMap = new HashMap();
+        resultMsgMap.put("RESULT", "SUCCESS");
+        resultMsgMap.put("MESSAGE", "成功信息...");
+        elements.add(resultMsgMap);
+
+//        resultMsgMap.put("RESULT", "FAIL");
+//        resultMsgMap.put("MESSAGE", "缴款书130000010002已确认收款，不能重复操作!!！");
+//        elements.add(resultMsgMap);
+
+        return elements;
+    }
+
+    //到账确认
+    public List accountNontaxPayment(String applicationid, String bank, String year, String finorg, List paramList) throws UnsupportedEncodingException {
         //返回成功信息
         List elements = new ArrayList();
         Map resultMsgMap = new HashMap();
@@ -100,8 +124,10 @@ public class BurlapTestServlet extends BurlapServlet {
         resultMsgMap.put("RESULT", "SUCCESS");
         resultMsgMap.put("MESSAGE", "成功信息...");
 */
+
         resultMsgMap.put("RESULT", "FAIL");
         resultMsgMap.put("MESSAGE", "缴款书130000010002已确认收款，不能重复操作！");
+
         elements.add(resultMsgMap);
         return elements;
 

@@ -24,7 +24,7 @@ public class Txn1532011Test {
             t.serialNo = "SPDB" + t.txnTime;
 
 
-            t.msgBody = ("|2013" +      //year
+            t.msgBody = ("2013" +      //year
                     "|CZBM" +           //Area_code
                     "|BANKNUM" +        //BANKNUM
                     "|BILLID" +         //BILLID
@@ -44,7 +44,8 @@ public class Txn1532011Test {
                     "|LATEFEE" +        //LATEFEE
                     "|BANKNOTESCODE" +  //BANKNOTESCODE
                     "|").getBytes();
-            t.msgBody = ("|2013" +      //year
+
+            t.msgBody = ("2013" +      //year
                     "|530003" +           //Area_code
                     "|3608" +        //BANKNUM
                     "|2075" +         //BILLID

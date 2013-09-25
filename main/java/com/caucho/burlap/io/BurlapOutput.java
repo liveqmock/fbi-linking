@@ -808,9 +808,9 @@ public class BurlapOutput extends AbstractBurlapOutput {
   public void printString(String v, int offset, int length)
     throws IOException
   {
-      // TODO
-      os.write(v.getBytes());
-/*
+      // TODO GBK
+//      os.write(v.getBytes());
+
     for (int i = 0; i < length; i++) {
       char ch = v.charAt(i + offset);
 
@@ -840,7 +840,7 @@ public class BurlapOutput extends AbstractBurlapOutput {
         os.write(0x80 + (ch & 0x3f));
       }
     }
-*/
+
   }
   
   /**

@@ -7,6 +7,7 @@ import apps.fisjz.repository.dao.FsJzfPaymentItemMapper;
 import apps.fisjz.repository.model.FsJzfPaymentInfo;
 import apps.fisjz.repository.model.FsJzfPaymentInfoExample;
 import apps.fisjz.repository.model.FsJzfPaymentItem;
+import apps.fisjz.repository.model.FsJzfPaymentItemExample;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,9 +53,10 @@ public class PaymentService {
         }
     }
 
-    public int processInitPaymentInfoAndPaymentItem(String areaCode, String branchId, String tellerId,
-                                                    TOA2010PaynotesInfo paynotesInfo,
-                                                    List<TOA2010PaynotesItem> paynotesItems) throws InvocationTargetException, IllegalAccessException {
+    //初始化缴款书主信息和子项目信息
+    public int initPaymentInfoAndPaymentItem(String areaCode, String branchId, String tellerId,
+                                             TOA2010PaynotesInfo paynotesInfo,
+                                             List<TOA2010PaynotesItem> paynotesItems) throws Exception {
 
         FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
         example.createCriteria()
@@ -70,7 +71,14 @@ public class PaymentService {
             FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
             BeanUtils.copyProperties(fsJzfPaymentInfo, paynotesInfo);
             insertPaymentInfo_init(areaCode, branchId, tellerId, fsJzfPaymentInfo);
+
             //初始化子项目明细表
+            FsJzfPaymentItemExample itemExample = new FsJzfPaymentItemExample();
+            itemExample.createCriteria().andMainidEqualTo(fsJzfPaymentInfo.getBillid());
+            List<FsJzfPaymentItem> itemList = paymentItemMapper.selectByExample(itemExample);
+            if (itemList.size() > 0) {
+                throw new RuntimeException("此BillId下的子项目信息已存在.");
+            }
             for (TOA2010PaynotesItem paynotesItem : paynotesItems) {
                 FsJzfPaymentItem fsJzfPaymentItem = new FsJzfPaymentItem();
                 BeanUtils.copyProperties(fsJzfPaymentItem, paynotesItem);

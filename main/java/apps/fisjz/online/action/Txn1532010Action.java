@@ -112,7 +112,7 @@ public class Txn1532010Action extends AbstractTxnAction {
         toa.setItemNum("" + paynotesItems.size());
 
         //处理财政局响应报文 4：本地数据库处理（若表中不存在则先保存）
-        paymentService.processInitPaymentInfoAndPaymentItem(tia.getAreacode(), msg.branchID, msg.ueserID, paynotesInfo, paynotesItems);
+        paymentService.initPaymentInfoAndPaymentItem(tia.getAreacode(), msg.branchID, msg.ueserID, paynotesInfo, paynotesItems);
 
         //组特色平台响应报文
         Map<String, Object> modelObjectsMap = new HashMap<String, Object>();
