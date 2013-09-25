@@ -18,7 +18,7 @@ public class NontaxBurlapProxyFactory extends BurlapProxyFactory {
         URLConnection conn = super.openConnection(url);
         int timeout = 0;
         try {
-            timeout = Integer.parseInt(PropertyManager.getProperty("thirdparty.nontax.jiaozhou.server.timeout"));
+            timeout = Integer.parseInt(PropertyManager.getProperty("thirdparty.nontax.server.530003.timeout"));
         } catch (NumberFormatException e) {
             throw new RuntimeException("与财政局服务器连接超时设置错误。");
         }

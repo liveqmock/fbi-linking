@@ -10,24 +10,22 @@ public class TIA2040PaynotesInfo {
     @DataField(seq = 3)
     private String banknum;    //手工票：交易流水  银行交易流水号 （手工票时不为空）
     @DataField(seq = 4)
-    private String billid;  //序列
-    @DataField(seq = 5)
     private String paynotescode; //缴款书单号
-    @DataField(seq = 6)
+    @DataField(seq = 5)
     private String notescode; //票据编号
-    @DataField(seq = 7)
+    @DataField(seq = 6)
     private String amt; //总金额      16位整数2小数
-    @DataField(seq = 8)
+    @DataField(seq = 7)
     private String noteskindcode; //票据信息编码
-    @DataField(seq = 9)
+    @DataField(seq = 8)
     private String noteskinkname; //票据信息名称
-    @DataField(seq = 10)
+    @DataField(seq = 9)
     private String agentbankcode;  //代收银行编码
-    @DataField(seq = 11)
+    @DataField(seq = 10)
     private String agentbankname;  //代收银行名称
-    @DataField(seq = 12)
+    @DataField(seq = 11)
     private String canceldate;  //银行冲销日期
-    @DataField(seq = 13)
+    @DataField(seq = 12)
     private String billtype;  //单据类型/业务类型
 
     //=======================================================================
@@ -38,14 +36,6 @@ public class TIA2040PaynotesInfo {
 
     public void setBanknum(String banknum) {
         this.banknum = banknum;
-    }
-
-    public String getBillid() {
-        return billid;
-    }
-
-    public void setBillid(String billid) {
-        this.billid = billid;
     }
 
     public String getPaynotescode() {
@@ -124,7 +114,6 @@ public class TIA2040PaynotesInfo {
     public String toString() {
         return "TIA2040PaynotesInfo{" +
                 "banknum='" + banknum + '\'' +
-                ", billid='" + billid + '\'' +
                 ", paynotescode='" + paynotescode + '\'' +
                 ", notescode='" + notescode + '\'' +
                 ", amt='" + amt + '\'' +

@@ -24,7 +24,7 @@ public class NontaxServiceFactory {
     }
 
     public NontaxBankService getNontaxBankService() {
-        String url = PropertyManager.getProperty("thirdparty.nontax.jiaozhou.server");
+        String url = PropertyManager.getProperty("thirdparty.nontax.server.530003");
         NontaxBankService service = null;
         try {
             service = (NontaxBankService) burlapProxyFactory.create(NontaxBankService.class, url);
