@@ -34,7 +34,7 @@ public class Txn1532040Action extends AbstractTxnAction {
             tia = (TIA2040)dataFormat.fromMessage(new String(msg.msgBody), "TIA2040");
         } catch (Exception e) {
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody =  "报文解析错误.".getBytes("GBK");
+            msg.msgBody =  "报文解析错误.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
         }
         Map paramMap = new HashMap();
@@ -46,12 +46,12 @@ public class Txn1532040Action extends AbstractTxnAction {
         FsJzfPaymentInfo fsJzfPaymentInfo = service.selectPaymentInfo(paramMap);
         if (fsJzfPaymentInfo == null) {//未查到记录
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody = "请先查询退付缴款单信息.".getBytes(THIRDPARTY_SERVER_CODING);
+            msg.msgBody = "无此缴款单缴款记录.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
         }else {
-            if ("1".equals(fsJzfPaymentInfo.getFbBookFlag())) {
+            if (!"99999999".equals(fsJzfPaymentInfo.getCanceldate())) { //已冲销
                 msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
-                msg.msgBody = ("此缴款单已退付,日期:" + fsJzfPaymentInfo.getBankrecdate()).getBytes(THIRDPARTY_SERVER_CODING);
+                msg.msgBody = ("此缴款单已冲销,日期:" + fsJzfPaymentInfo.getCanceldate()).getBytes(THIRDPARTY_SERVER_CODING);
                 return msg;
             }
         }

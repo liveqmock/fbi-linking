@@ -41,7 +41,9 @@ public class T2010Service {
     FsJzfPaymentItemMapper paymentItemMapper;
 
 
-    //缴款书信息查询
+    /**
+     * 缴款书信息查询
+     */
     public FsJzfPaymentInfo selectPaymentInfo(Map paramMap) {
         TIA2010 tia = (TIA2010) paramMap.get("tia");
         String areacode = tia.getAreacode();
@@ -56,6 +58,7 @@ public class T2010Service {
                 .andBilltypeEqualTo(billtype)
                 .andAreaCodeEqualTo(areacode)
                 .andCanceldateEqualTo("99999999")    //非冲销记录
+                //.andRecfeeflagEqualTo(recfeeFlag)          //到账标志
                 .andArchiveFlagEqualTo("0");
         List<FsJzfPaymentInfo> recordList = paymentInfoMapper.selectByExample(example);
         if (recordList.size() == 1) {
@@ -255,8 +258,9 @@ public class T2010Service {
         paymentInfo.setFbBookFlag("0");
         paymentInfo.setFbChkFlag("0");
 
-        //正常记录标志
-        paymentInfo.setArchiveFlag("0");
+
+        paymentInfo.setArchiveFlag("0"); //正常记录标志
+        paymentInfo.setRecfeeflag("0");  //未到账
 
         paymentInfo.setCanceldate("99999999");
         paymentInfo.setAreaCode(areaCode);

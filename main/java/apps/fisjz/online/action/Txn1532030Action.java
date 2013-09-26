@@ -35,7 +35,7 @@ public class Txn1532030Action extends AbstractTxnAction {
             tia = (TIA2030) dataFormat.fromMessage(new String(msg.msgBody), "TIA2030");
         } catch (Exception e) {
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody =  "报文解析错误.".getBytes("GBK");
+            msg.msgBody =  "报文解析错误.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
         }
         Map paramMap = new HashMap();

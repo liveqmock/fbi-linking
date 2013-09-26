@@ -52,7 +52,7 @@ public class Txn1532011Action extends AbstractTxnAction {
             msg.msgBody = "请先查询缴款单信息.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
         }else {
-            if ("1".equals(fsJzfPaymentInfo.getFbBookFlag())) {
+            if ("1".equals(fsJzfPaymentInfo.getRecfeeflag())) {
                 msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
                 msg.msgBody = ("此缴款单已缴款,日期:" + fsJzfPaymentInfo.getBankrecdate()).getBytes(THIRDPARTY_SERVER_CODING);
                 return msg;

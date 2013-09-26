@@ -100,7 +100,7 @@ public class BurlapTestServlet extends BurlapServlet {
         List elements = new ArrayList();
 
         Map resultContentMap = new HashMap();
-        resultContentMap.put("billid", "2076");
+        resultContentMap.put("billid", "2075");
         resultContentMap.put("paynotescode", "2013000000001");
         resultContentMap.put("notescode", "130000010001");
         elements.add(resultContentMap);
@@ -120,14 +120,43 @@ public class BurlapTestServlet extends BurlapServlet {
     public List accountNontaxPayment(String applicationid, String bank, String year, String finorg, List paramList) throws UnsupportedEncodingException {
         //返回成功信息
         List elements = new ArrayList();
+
+        Map resultContentMap = new HashMap();
+        resultContentMap.put("billid", "2075");
+        resultContentMap.put("paynotescode", "2013000000001");
+        resultContentMap.put("notescode", "130000010001");
+        elements.add(resultContentMap);
+
         Map resultMsgMap = new HashMap();
-/*
         resultMsgMap.put("RESULT", "SUCCESS");
         resultMsgMap.put("MESSAGE", "成功信息...");
-*/
 
-        resultMsgMap.put("RESULT", "FAIL");
-        resultMsgMap.put("MESSAGE", "缴款书130000010002已确认收款，不能重复操作！");
+//        resultMsgMap.put("RESULT", "FAIL");
+//        resultMsgMap.put("MESSAGE", "缴款书130000010002已确认收款，不能重复操作！");
+
+        elements.add(resultMsgMap);
+        return elements;
+
+        //返回失败信息 TODO
+    }
+
+    //到账确认
+    public List cancelNontaxPayment(String applicationid, String bank, String year, String finorg, List paramList) throws UnsupportedEncodingException {
+        //返回成功信息
+        List elements = new ArrayList();
+
+        Map resultContentMap = new HashMap();
+        resultContentMap.put("billid", "2075");
+        resultContentMap.put("paynotescode", "2013000000001");
+        resultContentMap.put("notescode", "130000010001");
+        elements.add(resultContentMap);
+
+        Map resultMsgMap = new HashMap();
+        resultMsgMap.put("RESULT", "SUCCESS");
+        resultMsgMap.put("MESSAGE", "成功信息...");
+
+//        resultMsgMap.put("RESULT", "FAIL");
+//        resultMsgMap.put("MESSAGE", "缴款书130000010002已确认收款，不能重复操作！");
 
         elements.add(resultMsgMap);
         return elements;

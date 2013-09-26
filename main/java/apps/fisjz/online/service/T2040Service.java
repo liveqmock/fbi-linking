@@ -52,7 +52,7 @@ public class T2040Service {
                 .andPaynotescodeEqualTo(paynotescode)
                 .andNotescodeEqualTo(notescode)
                 .andAreaCodeEqualTo(areacode)
-                .andCanceldateEqualTo("99999999")    //非冲销记录
+                //.andCanceldateEqualTo("99999999")    //非冲销记录
                 .andArchiveFlagEqualTo("0");
         List<FsJzfPaymentInfo> recordList = paymentInfoMapper.selectByExample(example);
         if (recordList.size() == 1) {
@@ -72,6 +72,8 @@ public class T2040Service {
         String tellerId = (String) paramMap.get("tellerId");
         TIA2040 tia = (TIA2040) paramMap.get("tia");
         String areacode = tia.getAreacode();
+
+        //FsJzfPaymentInfo record = selectPaymentInfo(paramMap);
 
         //与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();

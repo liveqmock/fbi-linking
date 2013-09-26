@@ -44,22 +44,22 @@ public class Txn1532010Action extends AbstractTxnAction {
         paramMap.put("tellerId", msg.tellerID);
         paramMap.put("tia", tia);
 
-        //查找本地记录
+        //检查本地已有记录的状态
         FsJzfPaymentInfo fsJzfPaymentInfo = service.selectPaymentInfo(paramMap);
         if (fsJzfPaymentInfo == null) {//本地未查到信息
             service.processTxn(paramMap); //取财政局服务器信息
             msg.rtnCode = (String)paramMap.get("rtnCode");
-            msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
         } else {
-            if ("0".equals(fsJzfPaymentInfo.getFbBookFlag())) {//本地已有初始信息，但未缴款
+            if ("1".equals(fsJzfPaymentInfo.getRecfeeflag())) { //已到账
+                //重复缴款
+                msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
+            }else{  //未到账，但本地已保存信息
                 service.processTxn_LocalInfo(paramMap); //取本地信息
                 msg.rtnCode = (String)paramMap.get("rtnCode");
-                msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
-            } else { //重复缴款
-                msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
-                msg.msgBody =  "此缴款书已缴款".getBytes(THIRDPARTY_SERVER_CODING);
             }
         }
+
+        msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
         return msg;
     }
 }
