@@ -1,22 +1,18 @@
 package apps.fisjz.online.action;
 
-import apps.fisjz.domain.financebureau.FbPaynotesInfo4Cancel;
 import apps.fisjz.domain.staring.T2040Request.TIA2040;
 import apps.fisjz.enums.TxnRtnCode;
-import apps.fisjz.gateway.financebureau.NontaxBankService;
-import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
-import apps.fisjz.online.service.PaymentService;
+import apps.fisjz.online.service.T2040Service;
 import apps.fisjz.repository.model.FsJzfPaymentInfo;
 import common.dataformat.SeperatedTextDataFormat;
 import gateway.domain.LFixedLengthProtocol;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 1532040缴款书冲销
@@ -27,7 +23,7 @@ public class Txn1532040Action extends AbstractTxnAction {
     private static Logger logger = LoggerFactory.getLogger(Txn1532040Action.class);
 
     @Autowired
-    private PaymentService paymentService;
+    private T2040Service service;
 
     @Override
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
@@ -41,41 +37,30 @@ public class Txn1532040Action extends AbstractTxnAction {
             msg.msgBody =  "报文解析错误.".getBytes("GBK");
             return msg;
         }
-        logger.info("[1532040缴款冲销] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 票据编号:" + tia.getPaynotesInfo().getNotescode());
+        Map paramMap = new HashMap();
+        paramMap.put("branchId", msg.branchID);
+        paramMap.put("tellerId", msg.tellerID);
+        paramMap.put("tia", tia);
 
-        //业务逻辑处理(检查处理重复数据)
-        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
-        BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-        int rtn = paymentService.processPaymentPay(tia.getAreacode(), msg.branchID, msg.tellerID, fsJzfPaymentInfo);
-        if (rtn == 1) {//重复缴款
-            msg.rtnCode = "0000";
-            msg.msgBody =  "缴款冲销成功(重复冲销)".getBytes("GBK");
-            return msg;
-        }
-
-        //与财政局通讯
-        NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
-        List<FbPaynotesInfo4Cancel> paramList = new ArrayList<FbPaynotesInfo4Cancel>();
-        FbPaynotesInfo4Cancel fbPaynotesInfo = new FbPaynotesInfo4Cancel();
-        BeanUtils.copyProperties(fbPaynotesInfo, tia.getPaynotesInfo());
-        paramList.add(fbPaynotesInfo);
-        logger.info("[1532040缴款冲销] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
-        List rtnlist = service.cancelNontaxPayment(
-                getApplicationidByAreaCode(tia.getAreacode()),
-                getBankCodeByAreaCode(tia.getAreacode()),
-                tia.getYear(),
-                getFinorgByAreaCode(tia.getAreacode()),
-                paramList);
-
-        //判断财政局响应结果
-        if (getResponseResult(rtnlist)) { //缴款成功
-            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
-            msg.msgBody =  "缴款冲销成功".getBytes("GBK");
-        }else{ //缴款失败
+        //本地数据检查
+        FsJzfPaymentInfo fsJzfPaymentInfo = service.selectPaymentInfo(paramMap);
+        if (fsJzfPaymentInfo == null) {//未查到记录
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody =  getResponseErrMsg(rtnlist).getBytes("GBK");
+            msg.msgBody = "请先查询退付缴款单信息.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
+        }else {
+            if ("1".equals(fsJzfPaymentInfo.getFbBookFlag())) {
+                msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
+                msg.msgBody = ("此缴款单已退付,日期:" + fsJzfPaymentInfo.getBankrecdate()).getBytes(THIRDPARTY_SERVER_CODING);
+                return msg;
+            }
         }
+
+        //业务逻辑处理
+        service.processTxn(paramMap);
+
+        msg.rtnCode = (String)paramMap.get("rtnCode");
+        msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
         return msg;
     }
 }

@@ -9,6 +9,8 @@ public enum TxnRtnCode implements EnumApp {
 
     TXN_EXECUTE_SECCESS("0000", "交易完成"),
     TXN_PAY_REPEATED("0001", "该票据已缴款"),
+    //TXN_CANCEL_REPEATED("0002", "该票据已冲销"),
+
     TXN_EXECUTE_FAILED("1100", "交易失败"),
 
     MSG_AUTHENTICATE_ILLEGAL("2000", "报文验证失败"),

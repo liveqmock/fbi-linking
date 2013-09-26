@@ -26,7 +26,7 @@ public class TIA2040PaynotesInfo {
     @DataField(seq = 11)
     private String canceldate;  //银行冲销日期
     @DataField(seq = 12)
-    private String billtype;  //单据类型/业务类型
+    private String billtype;  //单据类型/业务类型    3
 
     //=======================================================================
 

@@ -24,6 +24,7 @@ public class Txn1532010Test {
             t.serialNo = "SPDB" + t.txnTime;
 
             t.msgBody = "2013|530003|PJBH001|YZM001|PJLX001|".getBytes();
+            t.msgBody = "2013|530003|130000010001|FM5EH6|0|".getBytes();
 
             System.out.println("·¢ËÍ±¨ÎÄ£º" + new String(t.toByteArray()));
             //Socket socket = new Socket("10.22.0.45", 60001);

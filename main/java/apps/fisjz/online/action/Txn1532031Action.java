@@ -1,24 +1,17 @@
 package apps.fisjz.online.action;
 
-import apps.fisjz.domain.financebureau.FbPaynotesInfo;
-import apps.fisjz.domain.financebureau.FbPaynotesInfo4Refund;
 import apps.fisjz.domain.staring.T2031Request.TIA2031;
 import apps.fisjz.enums.TxnRtnCode;
-import apps.fisjz.gateway.financebureau.NontaxBankService;
-import apps.fisjz.gateway.financebureau.NontaxServiceFactory;
-import apps.fisjz.online.service.PaymentService;
+import apps.fisjz.online.service.T2030Service;
 import apps.fisjz.repository.model.FsJzfPaymentInfo;
 import common.dataformat.SeperatedTextDataFormat;
 import gateway.domain.LFixedLengthProtocol;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,7 +23,7 @@ public class Txn1532031Action extends AbstractTxnAction {
     private static Logger logger = LoggerFactory.getLogger(Txn1532031Action.class);
 
     @Autowired
-    private PaymentService paymentService;
+    private T2030Service service;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -45,60 +38,30 @@ public class Txn1532031Action extends AbstractTxnAction {
             msg.msgBody = "报文解析错误.".getBytes("GBK");
             return msg;
         }
-        logger.info("[1532031缴款退付] 网点号:" + msg.branchID + " 柜员号:" + msg.tellerID + " 票据编号:" + tia.getPaynotesInfo().getNotescode());
+        Map paramMap = new HashMap();
+        paramMap.put("branchId", msg.branchID);
+        paramMap.put("tellerId", msg.tellerID);
+        paramMap.put("tia", tia);
 
-        //业务逻辑处理(对于特色平台自动冲正的交易做归档处理)
-        FsJzfPaymentInfo fsJzfPaymentInfo = new FsJzfPaymentInfo();
-        BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
-        int rtn = paymentService.processPaymentPay(tia.getAreacode(), msg.branchID, msg.tellerID, fsJzfPaymentInfo);
-        if (rtn == -1) {
+        //本地数据检查
+        FsJzfPaymentInfo fsJzfPaymentInfo = service.selectPaymentInfo(paramMap);
+        if (fsJzfPaymentInfo == null) {//未查到记录
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody = "请先查询缴款单退付信息.".getBytes("GBK");
+            msg.msgBody = "请先查询退付缴款单信息.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
-        }
-
-        //与财政局通讯
-        NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
-        List<FbPaynotesInfo4Refund> paramList = new ArrayList<FbPaynotesInfo4Refund>();
-        FbPaynotesInfo4Refund fbPaynotesInfo = new FbPaynotesInfo4Refund();
-        BeanUtils.copyProperties(fbPaynotesInfo, tia.getPaynotesInfo());
-        paramList.add(fbPaynotesInfo);
-        logger.info("[1532031退付缴款确认] 请求报文信息（发往财政）:" + fbPaynotesInfo.toString());
-        List rtnlist = service.updateRefundNontaxPayment(
-                getApplicationidByAreaCode(tia.getAreacode()),
-                getBankCodeByAreaCode(tia.getAreacode()),
-                tia.getYear(),
-                getFinorgByAreaCode(tia.getAreacode()),
-                paramList);
-
-
-        //判断财政局响应结果
-        if (getResponseResult(rtnlist)) { //缴款成功
-            //检查明细
-            Map responseContentMap = (Map) rtnlist.get(0);
-            FbPaynotesInfo respInfo = new FbPaynotesInfo();
-            BeanUtils.populate(respInfo, responseContentMap);
-            if (!fbPaynotesInfo.getBillid().equals(respInfo.getBillid()) ||
-                    !fbPaynotesInfo.getPaynotescode().equals(respInfo.getPaynotescode()) ||
-                    !fbPaynotesInfo.getNotescode().equals(respInfo.getNotescode())
-                    ) {
-                msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-                msg.msgBody = "缴款退付交易失败!明细核对不符!".getBytes("GBK");
+        }else {
+            if ("1".equals(fsJzfPaymentInfo.getFbBookFlag())) {
+                msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
+                msg.msgBody = ("此缴款单已退付,日期:" + fsJzfPaymentInfo.getBankrecdate()).getBytes(THIRDPARTY_SERVER_CODING);
                 return msg;
             }
-
-            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_SECCESS.getCode();
-            String rtnMsg = getResponseErrMsg(rtnlist);
-            if (StringUtils.isEmpty(rtnMsg)) {
-                msg.msgBody = "缴款退付成功".getBytes("GBK");
-            } else {
-                msg.msgBody = getResponseErrMsg(rtnlist).getBytes("GBK");
-            }
-        } else { //缴款失败
-            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody = getResponseErrMsg(rtnlist).getBytes("GBK");
-            return msg;
         }
+
+        //业务逻辑处理
+        service.processTxn(paramMap);
+
+        msg.rtnCode = (String)paramMap.get("rtnCode");
+        msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
         return msg;
     }
 }

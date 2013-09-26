@@ -52,6 +52,7 @@ public class BurlapTestServlet extends BurlapServlet {
         detailsList.add(detailMap);
 
 */
+
         resultContentMap.put("billid", "2075");
         resultContentMap.put("paynotescode", "2013000000001");
         resultContentMap.put("notescode", "130000010001");
