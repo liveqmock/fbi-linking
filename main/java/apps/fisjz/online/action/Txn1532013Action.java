@@ -56,7 +56,6 @@ public class Txn1532013Action extends AbstractTxnAction {
             return msg;
         }
 
-
         //业务逻辑处理
         service.processTxn(paramMap);
 

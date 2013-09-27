@@ -109,6 +109,11 @@ public class T2031Service {
                 return;
             }
 
+            //全部处理成功 更新标志和处理时间
+            FsJzfPaymentInfo record = selectPaymentInfo(paramMap);
+            stuffPaymentInfoBean_pay(areacode, branchId, tellerId, record);
+            paymentInfoMapper.updateByPrimaryKey(record);
+
             paramMap.put("rtnCode", TxnRtnCode.TXN_EXECUTE_SECCESS.getCode());
             String rtnMsg = helper.getResponseErrMsg(rtnlist);
             if (StringUtils.isEmpty(rtnMsg)) {
@@ -116,11 +121,6 @@ public class T2031Service {
             } else {
                 paramMap.put("rtnMsg", helper.getResponseErrMsg(rtnlist));
             }
-
-            //全部处理成功 更新标志和处理时间
-            FsJzfPaymentInfo record = selectPaymentInfo(paramMap);
-            stuffPaymentInfoBean_pay(areacode, branchId, tellerId, record);
-            paymentInfoMapper.updateByPrimaryKey(record);
         } else { //缴款失败
             paramMap.put("rtnCode", TxnRtnCode.TXN_EXECUTE_FAILED.getCode());
             paramMap.put("rtnMsg", helper.getResponseErrMsg(rtnlist));

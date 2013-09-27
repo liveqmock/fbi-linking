@@ -53,7 +53,7 @@ public class ActChkService {
         //正常缴款类型
         List<String> billTypes = new ArrayList<String>();
         billTypes.add("0");
-        billTypes.add("1");
+        billTypes.add("1");   //手工票
 
         FsJzfPaymentInfoExample example = new FsJzfPaymentInfoExample();
         example.createCriteria()

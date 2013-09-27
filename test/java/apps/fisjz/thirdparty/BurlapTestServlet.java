@@ -140,7 +140,10 @@ public class BurlapTestServlet extends BurlapServlet {
         //返回失败信息 TODO
     }
 
-    //到账确认
+
+
+
+    //冲销
     public List cancelNontaxPayment(String applicationid, String bank, String year, String finorg, List paramList) throws UnsupportedEncodingException {
         //返回成功信息
         List elements = new ArrayList();

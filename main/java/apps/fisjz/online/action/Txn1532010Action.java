@@ -53,13 +53,14 @@ public class Txn1532010Action extends AbstractTxnAction {
             if ("1".equals(fsJzfPaymentInfo.getRecfeeflag())) { //已到账
                 //重复缴款
                 msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
+                msg.msgBody = ("此笔缴款单已缴款.").getBytes(THIRDPARTY_SERVER_CODING);
             }else{  //未到账，但本地已保存信息
                 service.processTxn_LocalInfo(paramMap); //取本地信息
                 msg.rtnCode = (String)paramMap.get("rtnCode");
+                msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
             }
         }
 
-        msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
         return msg;
     }
 }

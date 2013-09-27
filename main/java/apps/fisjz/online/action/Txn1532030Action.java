@@ -50,7 +50,7 @@ public class Txn1532030Action extends AbstractTxnAction {
             msg.rtnCode = (String)paramMap.get("rtnCode");
             msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
         } else {
-            if ("0".equals(fsJzfPaymentInfo.getFbBookFlag())) {//本地已有初始信息，但未缴款
+            if ("0".equals(fsJzfPaymentInfo.getFbBookFlag())) {//本地已有初始信息，但未退付
                 service.processTxn_LocalInfo(paramMap); //取本地信息
                 msg.rtnCode = (String)paramMap.get("rtnCode");
                 msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);

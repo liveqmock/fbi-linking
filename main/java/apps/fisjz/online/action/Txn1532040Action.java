@@ -46,12 +46,12 @@ public class Txn1532040Action extends AbstractTxnAction {
         FsJzfPaymentInfo fsJzfPaymentInfo = service.selectPaymentInfo(paramMap);
         if (fsJzfPaymentInfo == null) {//未查到记录
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody = "无此缴款单缴款记录.".getBytes(THIRDPARTY_SERVER_CODING);
+            msg.msgBody = "无待冲销缴款单.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
         }else {
-            if (!"99999999".equals(fsJzfPaymentInfo.getCanceldate())) { //已冲销
+            if ("0".equals(fsJzfPaymentInfo.getRecfeeflag())) { //未到账
                 msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
-                msg.msgBody = ("此缴款单已冲销,日期:" + fsJzfPaymentInfo.getCanceldate()).getBytes(THIRDPARTY_SERVER_CODING);
+                msg.msgBody = "此缴款单未缴款,不能做冲销.".getBytes(THIRDPARTY_SERVER_CODING);
                 return msg;
             }
         }

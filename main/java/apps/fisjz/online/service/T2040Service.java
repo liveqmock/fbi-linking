@@ -52,7 +52,8 @@ public class T2040Service {
                 .andPaynotescodeEqualTo(paynotescode)
                 .andNotescodeEqualTo(notescode)
                 .andAreaCodeEqualTo(areacode)
-                //.andCanceldateEqualTo("99999999")    //非冲销记录
+                .andCanceldateEqualTo("99999999")    //非被冲销记录
+                .andBilltypeNotEqualTo("3")      //非冲销记录
                 .andArchiveFlagEqualTo("0");
         List<FsJzfPaymentInfo> recordList = paymentInfoMapper.selectByExample(example);
         if (recordList.size() == 1) {
@@ -64,7 +65,7 @@ public class T2040Service {
         }
     }
 
-    //普通退付缴款书缴款
+
     @SuppressWarnings("unchecked")
     @Transactional
     public void processTxn(Map paramMap) {
@@ -106,14 +107,14 @@ public class T2040Service {
                     !fbPaynotesInfo.getNotescode().equals(respInfo.getNotescode())
                     ) {
                 paramMap.put("rtnCode", TxnRtnCode.TXN_EXECUTE_FAILED.getCode());
-                paramMap.put("rtnMsg", "缴款退付交易失败!明细核对不符!");
+                paramMap.put("rtnMsg", "缴款冲销交易失败!明细核对不符!");
                 return;
             }
 
             paramMap.put("rtnCode", TxnRtnCode.TXN_EXECUTE_SECCESS.getCode());
             String rtnMsg = helper.getResponseErrMsg(rtnlist);
             if (StringUtils.isEmpty(rtnMsg)) {
-                paramMap.put("rtnMsg", "缴款退付成功.");
+                paramMap.put("rtnMsg", "缴款冲销成功.");
             } else {
                 paramMap.put("rtnMsg", helper.getResponseErrMsg(rtnlist));
             }
