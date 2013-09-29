@@ -163,10 +163,10 @@ public class T2013Service {
         paymentInfo.setFbBookFlag("1");
         paymentInfo.setFbChkFlag("0");
 
-        //正常记录标志
-        paymentInfo.setArchiveFlag("0");
+        paymentInfo.setArchiveFlag("0");    //正常记录标志
         paymentInfo.setCanceldate("99999999");
         paymentInfo.setAreaCode(areaCode);
+        paymentInfo.setHostAckFlag("0");  //主机记账确认标志
 
         paymentInfoMapper.insert(paymentInfo);
     }

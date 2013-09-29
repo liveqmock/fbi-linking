@@ -202,7 +202,7 @@ public class T2010Service {
         try {
             result = (String) dataFormat.toMessage(modelObjectsMap);
         } catch (Exception e) {
-            throw new RuntimeException("响应报文处理错误");
+            throw new RuntimeException("响应报文处理错误", e);
         }
 
         paramMap.put("rtnCode", TxnRtnCode.TXN_EXECUTE_SECCESS.getCode());
@@ -261,6 +261,7 @@ public class T2010Service {
 
         paymentInfo.setArchiveFlag("0"); //正常记录标志
         paymentInfo.setRecfeeflag("0");  //未到账
+        paymentInfo.setHostAckFlag("0");  //主机记账确认标志
 
         paymentInfo.setCanceldate("99999999");
         paymentInfo.setAreaCode(areaCode);

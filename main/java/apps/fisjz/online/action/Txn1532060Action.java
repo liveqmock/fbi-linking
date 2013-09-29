@@ -1,9 +1,8 @@
 package apps.fisjz.online.action;
 
-import apps.fisjz.domain.staring.T2040Request.TIA2040;
+import apps.fisjz.domain.staring.T2060Request.TIA2060;
 import apps.fisjz.enums.TxnRtnCode;
-import apps.fisjz.online.service.T2040Service;
-import apps.fisjz.repository.model.FsJzfPaymentInfo;
+import apps.fisjz.online.service.T2060Service;
 import common.dataformat.SeperatedTextDataFormat;
 import gateway.domain.LFixedLengthProtocol;
 import org.slf4j.Logger;
@@ -15,23 +14,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 1532040缴款书冲销
+ * 1532060 对账
  * zhanrui  20130923
  */
 @Component
-public class Txn1532040Action extends AbstractTxnAction {
-    private static Logger logger = LoggerFactory.getLogger(Txn1532040Action.class);
+public class Txn1532060Action extends AbstractTxnAction {
+    private static Logger logger = LoggerFactory.getLogger(Txn1532060Action.class);
 
     @Autowired
-    private T2040Service service;
+    private T2060Service service;
 
     @Override
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
         // 解析特色平台请求报文体
-        SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2040Request");
-        TIA2040 tia = null;
+        SeperatedTextDataFormat dataFormat = new SeperatedTextDataFormat("apps.fisjz.domain.staring.T2060Request");
+        TIA2060 tia = null;
         try {
-            tia = (TIA2040)dataFormat.fromMessage(new String(msg.msgBody), "TIA2040");
+            tia = (TIA2060)dataFormat.fromMessage(new String(msg.msgBody), "TIA2060");
         } catch (Exception e) {
             logger.error("报文解析错误:", e);
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
@@ -42,20 +41,6 @@ public class Txn1532040Action extends AbstractTxnAction {
         paramMap.put("branchId", msg.branchID);
         paramMap.put("tellerId", msg.tellerID);
         paramMap.put("tia", tia);
-
-        //本地数据检查
-        FsJzfPaymentInfo fsJzfPaymentInfo = service.selectPaymentInfo(paramMap);
-        if (fsJzfPaymentInfo == null) {//未查到记录
-            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
-            msg.msgBody = "无待冲销缴款单.".getBytes(THIRDPARTY_SERVER_CODING);
-            return msg;
-        }else {
-            if ("0".equals(fsJzfPaymentInfo.getRecfeeflag())) { //未到账
-                msg.rtnCode = TxnRtnCode.TXN_PAY_REPEATED.getCode();
-                msg.msgBody = "此缴款单未缴款,不能做冲销.".getBytes(THIRDPARTY_SERVER_CODING);
-                return msg;
-            }
-        }
 
         //业务逻辑处理
         service.processTxn(paramMap);

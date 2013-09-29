@@ -34,6 +34,7 @@ public class Txn1532010Action extends AbstractTxnAction {
         try {
             tia = (TIA2010) dataFormat.fromMessage(new String(msg.msgBody), "TIA2010");
         } catch (Exception e) {
+            logger.error("报文解析错误:", e);
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
             msg.msgBody =  "报文解析错误.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;
@@ -49,6 +50,7 @@ public class Txn1532010Action extends AbstractTxnAction {
         if (fsJzfPaymentInfo == null) {//本地未查到信息
             service.processTxn(paramMap); //取财政局服务器信息
             msg.rtnCode = (String)paramMap.get("rtnCode");
+            msg.msgBody = ((String)paramMap.get("rtnMsg")).getBytes(THIRDPARTY_SERVER_CODING);
         } else {
             if ("1".equals(fsJzfPaymentInfo.getRecfeeflag())) { //已到账
                 //重复缴款

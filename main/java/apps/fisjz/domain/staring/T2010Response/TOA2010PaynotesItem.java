@@ -1,9 +1,9 @@
 package apps.fisjz.domain.staring.T2010Response;
 
 import common.dataformat.annotation.DataField;
-import common.dataformat.annotation.SeperatedTextMessage;
+import common.dataformat.annotation.OneToManySeperatedTextMessage;
 
-@SeperatedTextMessage(separator = ",")
+@OneToManySeperatedTextMessage(separator = ",")
 public class TOA2010PaynotesItem {
     
     private String pkid;

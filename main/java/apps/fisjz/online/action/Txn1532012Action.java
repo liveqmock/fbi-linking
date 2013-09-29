@@ -24,6 +24,7 @@ public class Txn1532012Action extends AbstractTxnAction {
         try {
             tia = (TIA2012) dataFormat.fromMessage(new String(msg.msgBody), "TIA2012");
         } catch (Exception e) {
+            logger.error("报文解析错误:", e);
             msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
             msg.msgBody =  "报文解析错误.".getBytes(THIRDPARTY_SERVER_CODING);
             return msg;

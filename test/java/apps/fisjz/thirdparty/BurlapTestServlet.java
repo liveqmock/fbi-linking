@@ -167,4 +167,22 @@ public class BurlapTestServlet extends BurlapServlet {
         //返回失败信息 TODO
     }
 
+    //对账
+    public List insertBankNontaxPayment(String applicationid, String bank, String year, String finorg, List paramList) throws UnsupportedEncodingException {
+        //返回成功信息
+        List elements = new ArrayList();
+
+        Map resultMsgMap = new HashMap();
+        resultMsgMap.put("RESULT", "SUCCESS");
+        resultMsgMap.put("MESSAGE", "成功信息...");
+
+//        resultMsgMap.put("RESULT", "FAIL");
+//        resultMsgMap.put("MESSAGE", "失败！");
+
+        elements.add(resultMsgMap);
+        return elements;
+
+        //返回失败信息 TODO
+    }
+
 }

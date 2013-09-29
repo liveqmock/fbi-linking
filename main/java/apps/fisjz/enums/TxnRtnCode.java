@@ -8,7 +8,7 @@ import java.util.Hashtable;
 public enum TxnRtnCode implements EnumApp {
 
     TXN_EXECUTE_SECCESS("0000", "交易完成"),
-    TXN_PAY_REPEATED("0001", "该票据已缴款"),
+    TXN_PAY_REPEATED("0000", "该票据已缴款"),  //与交易完成相同，便于特色平台进行重复缴款
     //TXN_CANCEL_REPEATED("0002", "该票据已冲销"),
 
     TXN_EXECUTE_FAILED("1100", "交易失败"),

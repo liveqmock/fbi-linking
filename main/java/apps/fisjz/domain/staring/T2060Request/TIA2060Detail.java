@@ -1,14 +1,14 @@
 package apps.fisjz.domain.staring.T2060Request;
 
 import common.dataformat.annotation.DataField;
-import common.dataformat.annotation.SeperatedTextMessage;
+import common.dataformat.annotation.OneToManySeperatedTextMessage;
 
 /**
  * Created with IntelliJ IDEA.
  * User: zhanrui
  * Date: 13-9-22
  */
-@SeperatedTextMessage(separator = ",")
+@OneToManySeperatedTextMessage(separator = ",")
 public class TIA2060Detail {
     @DataField(seq = 1)
     private String banknum;    //银行流水

@@ -281,10 +281,12 @@ public class SeperatedTextDataBindFactory extends DataBindAbstractFactory implem
                         StringBuilder oneToManyResultBuffer = new StringBuilder();
                         Object target = it.next();
                         if (oneToManySeparator == null) {
-                            SeperatedTextMessage seperatedTextMessage = (SeperatedTextMessage) target.getClass().getAnnotation(SeperatedTextMessage.class);
-                            if (seperatedTextMessage != null) {
-                                oneToManySeparator = seperatedTextMessage.separator();
+                            //SeperatedTextMessage seperatedTextMessage = (SeperatedTextMessage) target.getClass().getAnnotation(SeperatedTextMessage.class);
+                            OneToManySeperatedTextMessage seperatedTextMessage = (OneToManySeperatedTextMessage) target.getClass().getAnnotation(OneToManySeperatedTextMessage.class);
+                            if (seperatedTextMessage == null) {
+                                throw new RuntimeException("OntToManySeperatedTextMessage not defined!");
                             }
+                            oneToManySeparator = seperatedTextMessage.separator();
                         }
 
                         Map<Integer, String> oneToManyResultsMap = new HashMap<Integer, String>();

@@ -143,7 +143,7 @@ public class T2030Service {
         try {
             result = (String) dataFormat.toMessage(modelObjectsMap);
         } catch (Exception e) {
-            throw new RuntimeException("响应报文处理错误");
+            throw new RuntimeException("响应报文处理错误", e);
         }
 
         paramMap.put("rtnCode", TxnRtnCode.TXN_EXECUTE_SECCESS.getCode());
