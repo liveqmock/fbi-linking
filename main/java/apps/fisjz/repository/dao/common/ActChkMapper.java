@@ -64,4 +64,11 @@ public interface ActChkMapper {
             "   and a.archive_flag = '0'" +
             "   and a.recfeeflag = '1'")
     void updateHostChkSuccessFlag(@Param("areaCode")String areaCode, @Param("txnDate")String txnDate);
+
+    @Select("update fs_jzf_payment_info a set a.fb_chk_flag = '1' " +
+            " where a.area_code = #{areaCode}" +
+            "   and a.bankacctdate = #{txnDate} " +
+            "   and a.archive_flag = '0'" +
+            "   and a.recfeeflag = '1'")
+    void updateThirdPartyChkSuccessFlag(@Param("areaCode")String areaCode, @Param("txnDate")String txnDate);
 }

@@ -63,7 +63,7 @@ public class T2060Service {
             actChkMapper.updateHostChkSuccessFlag(areacode, txndate);
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -84,6 +84,7 @@ public class T2060Service {
                 actChkInfoList);
 
         if (helper.getResponseResult(rtnlist)) {
+            actChkMapper.updateThirdPartyChkSuccessFlag(areacode, txndate);
             paramMap.put("rtnCode", TxnRtnCode.TXN_EXECUTE_SECCESS.getCode());
             paramMap.put("rtnMsg", "∂‘’À≥…π¶!");
             return true;
