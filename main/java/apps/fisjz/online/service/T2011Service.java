@@ -76,8 +76,15 @@ public class T2011Service {
 
         List rtnlist = new ArrayList();
         FsJzfPaymentInfo fsJzfPaymentInfo = selectPaymentInfo(paramMap);
+        String fbBookFlag = fsJzfPaymentInfo.getFbBookFlag();
 
-        if ("1".equals(fsJzfPaymentInfo.getFbBookFlag())) {  //已记账但未到账，此时到账标志一定为0
+        try {
+            BeanUtils.copyProperties(fsJzfPaymentInfo, tia.getPaynotesInfo());
+        } catch (Exception e) {
+            throw new RuntimeException("报文处理错误.", e);
+        }
+
+        if ("1".equals(fbBookFlag)) {  //已记账但未到账，此时到账标志一定为0
             //自动发起缴款确认交易
             if (processPayConfirmTxn(fsJzfPaymentInfo, paramMap) == 0) {
                 //全部处理成功 更新标志和处理时间

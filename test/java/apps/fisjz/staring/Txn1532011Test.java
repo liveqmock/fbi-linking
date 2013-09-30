@@ -47,7 +47,7 @@ public class Txn1532011Test {
 
             t.msgBody = ("2013" +      //year
                     "|530003" +           //Area_code
-                    "|3608" +        //BANKNUM
+                    "|3608111111" +        //BANKNUM
                     "|2075" +         //BILLID
                     "|2013000000001" +   //PAYNOTESCODE
                     "|130000010001" +      //NOTESCODE

@@ -111,6 +111,12 @@ public class T2031Service {
 
             //全部处理成功 更新标志和处理时间
             FsJzfPaymentInfo record = selectPaymentInfo(paramMap);
+            try {
+                BeanUtils.copyProperties(record, tia.getPaynotesInfo());
+            } catch (Exception e) {
+                throw new RuntimeException("报文处理错误.", e);
+            }
+
             stuffPaymentInfoBean_pay(areacode, branchId, tellerId, record);
             paymentInfoMapper.updateByPrimaryKey(record);
 

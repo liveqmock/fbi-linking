@@ -57,6 +57,9 @@ public class T2060Service {
 
         int localTotalcnt = actChkMapper.selectHostChkTotalCount(areacode, txndate);
         BigDecimal localTotalamt = actChkMapper.selectHostChkTotalAmt(areacode, txndate);
+        if (localTotalamt == null) {
+            localTotalamt = new BigDecimal("0.00");
+        }
 
         if (localTotalcnt == hostTotalcnt && localTotalamt.compareTo(hostTotalamt) == 0) {
             //更新本地数据库信息：主机对账成功

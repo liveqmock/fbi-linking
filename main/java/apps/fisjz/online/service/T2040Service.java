@@ -74,8 +74,6 @@ public class T2040Service {
         TIA2040 tia = (TIA2040) paramMap.get("tia");
         String areacode = tia.getAreacode();
 
-        //FsJzfPaymentInfo record = selectPaymentInfo(paramMap);
-
         //与财政局通讯
         NontaxBankService service = NontaxServiceFactory.getInstance().getNontaxBankService();
         List<FbPaynotesInfo4Cancel> paramList = new ArrayList<FbPaynotesInfo4Cancel>();
@@ -175,6 +173,7 @@ public class T2040Service {
         //正常记录标志
         paymentInfo.setArchiveFlag("0");
         paymentInfo.setAreaCode(areaCode);
+        paymentInfo.setHostAckFlag("0");
 
         paymentInfoMapper.insert(paymentInfo);
     }
