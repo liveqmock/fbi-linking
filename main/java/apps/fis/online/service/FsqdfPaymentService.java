@@ -43,6 +43,12 @@ public class FsqdfPaymentService {
         return paymentItemMapper.selectByExample(example).size() > 0 ? true : false;
     }
 
+    private boolean deletePaymentItem(String voucherType, String voucherNo, String xmsx) {
+        FsQdfPaymentItemExample example = new FsQdfPaymentItemExample();
+        example.createCriteria().andPjzlEqualTo(voucherType).andJksbhEqualTo(voucherNo).andXmsxEqualTo(xmsx);
+        return paymentItemMapper.deleteByExample(example) > 0 ? true : false;
+    }
+
     public FsQdfPaymentInfo qryPaymentInfo(String voucherType, String voucherNo) {
         FsQdfPaymentInfoExample example = new FsQdfPaymentInfoExample();
         example.createCriteria().andPjzlEqualTo(voucherType).andJksbhEqualTo(voucherNo).andHostBookFlagNotEqualTo("2");
@@ -139,7 +145,7 @@ public class FsqdfPaymentService {
 
     private int insertPaymentItem(FsQdfPaymentItem item) {
         if (isExistPaymentItem(item.getPjzl(), item.getJksbh(), item.getXmsx()))
-            return 1;
+            deletePaymentItem(item.getPjzl(), item.getJksbh(), item.getXmsx());
         String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
         String time = new SimpleDateFormat("HHmmss").format(new Date());
         item.setOperDate(date);
