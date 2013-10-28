@@ -14,7 +14,10 @@ public abstract class AbstractTxnAction {
     public LFixedLengthProtocol run(LFixedLengthProtocol tia) {
         try {
             tia.rtnCode = "0000";
-            return process(tia);
+            LFixedLengthProtocol toa = process(tia);
+            toa.msgBody = (new String(toa.msgBody)  +"|").getBytes();
+            return toa;
+//            return process(tia);
         } catch (Exception e) {
             logger.error("Action业务处理错误。", e);
             throw new RuntimeException(e.getMessage() == null ? TxnRtnCode.TXN_EXECUTE_FAILED.toRtnMsg() : e.getMessage());
