@@ -31,11 +31,11 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-         <table schema="fis" tableName="hmfs_jm_act">
+         <table schema="fis" tableName="hmfs_jm_act_del">
             <property name="ignoreQualifiersAtRuntime" value="true"/>
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
-        <table schema="fis" tableName="hmfs_jm_act_txn">
+        <!--<table schema="fis" tableName="hmfs_jm_act_txn">
             <property name="ignoreQualifiersAtRuntime" value="true"/>
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
@@ -50,6 +50,6 @@
         <table schema="fis" tableName="hmfs_jm_voucher">
             <property name="ignoreQualifiersAtRuntime" value="true"/>
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>
+        </table>-->
     </context>
 </generatorConfiguration>

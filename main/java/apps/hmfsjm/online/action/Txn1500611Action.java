@@ -1,16 +1,13 @@
 package apps.hmfsjm.online.action;
 
+import apps.hmfsjm.enums.BillTxnStatus;
 import apps.hmfsjm.enums.TxnRtnCode;
-import apps.hmfsjm.gateway.domain.txn.Tia1001;
-import apps.hmfsjm.gateway.domain.txn.Tia2001;
-import apps.hmfsjm.gateway.domain.txn.Toa1001;
 import apps.hmfsjm.gateway.domain.txn.Toa2001;
-import apps.hmfsjm.gateway.service.ProtocolTxnService;
+import apps.hmfsjm.online.service.Txn1500611Service;
 import gateway.domain.LFixedLengthProtocol;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 //	即墨房屋维修资金缴款确认
@@ -18,8 +15,7 @@ import org.springframework.stereotype.Component;
 public class Txn1500611Action extends AbstractTxnAction {
 
     private static Logger logger = LoggerFactory.getLogger(Txn1500611Action.class);
-    @Autowired
-    private ProtocolTxnService protocolTxnService;
+    private Txn1500611Service txn1500611Service = new Txn1500611Service();
 
     @Override
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
@@ -31,17 +27,23 @@ public class Txn1500611Action extends AbstractTxnAction {
 
         logger.info("[1500611][2001][hmfsjm缴款书缴款确认][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
                 + "  [缴款书编号] " + billNo);
-
-        Tia2001 tia = new Tia2001();
-        tia.BODY.PAY_BILLNO = billNo;
         try {
-            Toa2001 toa = (Toa2001) protocolTxnService.execute("2001", tia);
-            // TODO 本地保存
+
+            Toa2001 toa = (Toa2001) txn1500611Service.process(msg.tellerID, msg.serialNo, billNo);
             msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
+            if (!BillTxnStatus.PAYED_SECCESS.getCode().equals(toa.BODY.BILL_STS_CODE)
+                    && !BillTxnStatus.CONFIRMED.getCode().equals(toa.BODY.BILL_STS_CODE)) {
+                throw new RuntimeException(StringUtils.isEmpty(toa.BODY.BILL_STS_CODE + toa.BODY.BILL_STS_TITLE) ?
+                        (toa.INFO.RET_CODE + toa.INFO.ERR_MSG) : (toa.BODY.BILL_STS_CODE + toa.BODY.BILL_STS_TITLE));
+            }
         } catch (Exception e) {
             logger.error("[1500611][2001][hmfsjm缴款单缴款确认]失败", e);
             msg.rtnCode = TxnRtnCode.TXN_FAILED.getCode();
-            msg.msgBody = TxnRtnCode.TXN_FAILED.getTitle().getBytes(THIRDPARTY_SERVER_CODING);
+            String errmsg = e.getMessage();
+            if (StringUtils.isEmpty(errmsg)) {
+                msg.msgBody = TxnRtnCode.TXN_FAILED.getTitle().getBytes(THIRDPARTY_SERVER_CODING);
+            } else
+                msg.msgBody = e.getMessage().getBytes(THIRDPARTY_SERVER_CODING);
         }
         return msg;
     }

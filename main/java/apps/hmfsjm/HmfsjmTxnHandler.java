@@ -1,7 +1,7 @@
 package apps.hmfsjm;
 
 import apps.TxnHandler;
-import apps.fisjz.online.action.AbstractTxnAction;
+import apps.hmfsjm.online.action.AbstractTxnAction;
 import gateway.domain.LFixedLengthProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

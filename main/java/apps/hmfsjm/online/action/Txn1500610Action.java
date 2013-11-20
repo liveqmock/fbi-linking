@@ -1,14 +1,12 @@
 package apps.hmfsjm.online.action;
 
 import apps.hmfsjm.enums.TxnRtnCode;
-import apps.hmfsjm.gateway.domain.txn.Tia1001;
 import apps.hmfsjm.gateway.domain.txn.Toa1001;
-import apps.hmfsjm.gateway.service.ProtocolTxnService;
+import apps.hmfsjm.online.service.Txn1500610Service;
 import gateway.domain.LFixedLengthProtocol;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 //	即墨房屋维修资金缴款查询
@@ -16,8 +14,7 @@ import org.springframework.stereotype.Component;
 public class Txn1500610Action extends AbstractTxnAction {
 
     private static Logger logger = LoggerFactory.getLogger(Txn1500610Action.class);
-    @Autowired
-    private ProtocolTxnService protocolTxnService;
+    private Txn1500610Service txn1500610Service = new Txn1500610Service();
 
     @Override
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
@@ -30,15 +27,20 @@ public class Txn1500610Action extends AbstractTxnAction {
         logger.info("[1500610缴款书信息查询][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
                 + "  [缴款书编号] " + billNo);
 
-        Tia1001 tia = new Tia1001();
-        tia.BODY.PAY_BILLNO = billNo;
+
         try {
-            Toa1001 toa = (Toa1001) protocolTxnService.execute("1001", tia);
+
+            Toa1001 toa = (Toa1001) txn1500610Service.process(msg.tellerID, billNo);
             msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
+
         } catch (Exception e) {
             logger.error("[1500610][1001][hmfsjm缴款单查询]失败", e);
             msg.rtnCode = TxnRtnCode.TXN_FAILED.getCode();
-            msg.msgBody = TxnRtnCode.TXN_FAILED.getTitle().getBytes(THIRDPARTY_SERVER_CODING);
+            String errmsg = e.getMessage();
+            if (StringUtils.isEmpty(errmsg)) {
+                msg.msgBody = TxnRtnCode.TXN_FAILED.getTitle().getBytes(THIRDPARTY_SERVER_CODING);
+            } else
+                msg.msgBody = e.getMessage().getBytes(THIRDPARTY_SERVER_CODING);
         }
         return msg;
     }

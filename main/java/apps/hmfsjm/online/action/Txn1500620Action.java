@@ -1,26 +1,25 @@
 package apps.hmfsjm.online.action;
 
 import apps.hmfsjm.enums.TxnRtnCode;
-import apps.hmfsjm.gateway.domain.txn.Tia1001;
+import apps.hmfsjm.gateway.client.SyncSocketClient;
 import apps.hmfsjm.gateway.domain.txn.Tia3001;
-import apps.hmfsjm.gateway.domain.txn.Toa1001;
 import apps.hmfsjm.gateway.domain.txn.Toa3001;
-import apps.hmfsjm.gateway.service.ProtocolTxnService;
+import apps.hmfsjm.online.service.Txn1500620Service;
 import gateway.domain.LFixedLengthProtocol;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 //	即墨房屋维修资金退款查询
 @Component
 public class Txn1500620Action extends AbstractTxnAction {
 
     private static Logger logger = LoggerFactory.getLogger(Txn1500620Action.class);
-    @Autowired
-    private ProtocolTxnService protocolTxnService;
-
+    private Txn1500620Service txn1500620Service = new Txn1500620Service();
     @Override
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
 
@@ -32,15 +31,17 @@ public class Txn1500620Action extends AbstractTxnAction {
         logger.info("[1500620][3001][hmfsjm退款单查询][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
                 + "  [退款书编号] " + billNo);
 
-        Tia3001 tia = new Tia3001();
-        tia.BODY.REFUND_BILLNO = billNo;
         try {
-            Toa3001 toa = (Toa3001) protocolTxnService.execute("3001", tia);
+            Toa3001 toa = (Toa3001)txn1500620Service.process(msg.tellerID, billNo);
             msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
         } catch (Exception e) {
             logger.error("[1500620][3001][hmfsjm退款单查询]失败", e);
             msg.rtnCode = TxnRtnCode.TXN_FAILED.getCode();
-            msg.msgBody = TxnRtnCode.TXN_FAILED.getTitle().getBytes(THIRDPARTY_SERVER_CODING);
+            String errmsg = e.getMessage();
+            if (StringUtils.isEmpty(errmsg)) {
+                msg.msgBody = TxnRtnCode.TXN_FAILED.getTitle().getBytes(THIRDPARTY_SERVER_CODING);
+            } else
+                msg.msgBody = e.getMessage().getBytes(THIRDPARTY_SERVER_CODING);
         }
         return msg;
     }
