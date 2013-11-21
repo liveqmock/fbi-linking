@@ -12,13 +12,16 @@ import apps.hmfsjm.repository.dao.HmfsJmActTxnMapper;
 import apps.hmfsjm.repository.dao.HmfsJmRefundMapper;
 import apps.hmfsjm.repository.model.*;
 import common.utils.ObjectFieldsCopier;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 1500621 退款确认 业务逻辑
@@ -52,15 +55,19 @@ public class Txn1500621Service {
             List<HmfsJmAct> actList = actMapper.selectByExample(actExample);
             if (actList.size() == 0) {
                 logger.error("退款分户账号不存在，分户号:" + refund.getHouseAccount() + " 退款单号：" + refund.getBillno());
-                throw new RuntimeException("退款分户账号不存在，分户号:" + refund.getHouseAccount() + " 退款单号：" + refund.getBillno());
+                throw new RuntimeException("分户账号不存在:" + refund.getHouseAccount() + " 退款单号：" + refund.getBillno());
             } else {   // 退款
                 HmfsJmAct act = actList.get(0);
                 act.setBalAmt(act.getBalAmt().subtract(refund.getTxnAmt()));
+                if (new BigDecimal("0.00").compareTo(act.getBalAmt()) > 0) {
+                    throw new RuntimeException("分户余额不足");
+                }
                 actMapper.updateByPrimaryKey(act);
                 logger.info("余额更新成功，分户号:" + refund.getHouseAccount() + " 单号：" + refund.getBillno());
             }
             HmfsJmActTxn txn = new HmfsJmActTxn();
             ObjectFieldsCopier.copyFields(refund, txn);
+            txn.setPkid(UUID.randomUUID().toString());
             txn.setActSerialNo(serialNo);
             txn.setTxnCode("3002");
             txn.setBookType(BillBookType.REFUND.getCode());
@@ -79,7 +86,11 @@ public class Txn1500621Service {
             return toa;
         } catch (Exception e) {
             session.rollback();
-            return null;
+            String errmsg = e.getMessage();
+            if (StringUtils.isEmpty(errmsg)) {
+                throw new RuntimeException("退款失败");
+            } else
+                throw new RuntimeException(errmsg);
         } finally {
             if (session != null) session.close();
         }

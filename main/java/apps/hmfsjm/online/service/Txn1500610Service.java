@@ -24,7 +24,7 @@ public class Txn1500610Service {
     private static final Logger logger = LoggerFactory.getLogger(Txn1500610Service.class);
     private BillService billService = new BillService();
 
-    public Toa process(String tellerID, String billNo) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    public Toa process(String tellerID, String branchID, String billNo) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
         Tia1001 tia = new Tia1001();
         tia.BODY.PAY_BILLNO = billNo;
@@ -40,7 +40,7 @@ public class Txn1500610Service {
                 " 状态码：" + toa.BODY.BILL_STS_CODE +
                 " 状态说明：" + toa.BODY.BILL_STS_TITLE);
 
-        HmfsJmBill bill = transToa1001ToBill(tellerID, toa);
+        HmfsJmBill bill = transToa1001ToBill(tellerID, branchID, toa);
         // 保存
         if (billService.saveDepositBill(bill)) {
             return toa;
@@ -50,7 +50,7 @@ public class Txn1500610Service {
         }
     }
 
-    private HmfsJmBill transToa1001ToBill(String operid, Toa1001 toa1001) {
+    private HmfsJmBill transToa1001ToBill(String operid, String branchID, Toa1001 toa1001) {
         HmfsJmBill bill = new HmfsJmBill();
         bill.setBillno(toa1001.BODY.PAY_BILLNO);
         bill.setBillStsCode(toa1001.BODY.BILL_STS_CODE);
@@ -72,6 +72,7 @@ public class Txn1500610Service {
         bill.setOperTime(new SimpleDateFormat("HHmmss").format(new Date()));
         bill.setQryTxnCode("1001");
         bill.setOperId(operid);
+        bill.setDeptId(branchID);
         bill.setBookType(BillBookType.DEPOSIT.getCode());         // 记账类型 00-收款  10-退款 20-支取 99-开户
         bill.setStsFlag(BillStsFlag.UNBOOK.getCode());            // 单据标志 0-未记账 1-记账未确认 2-记账已确认
         return bill;

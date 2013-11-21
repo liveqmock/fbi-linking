@@ -30,7 +30,7 @@ public class Txn1500610Action extends AbstractTxnAction {
 
         try {
 
-            Toa1001 toa = (Toa1001) txn1500610Service.process(msg.tellerID, billNo);
+            Toa1001 toa = (Toa1001) txn1500610Service.process(msg.tellerID, msg.branchID, billNo);
             msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
 
         } catch (Exception e) {

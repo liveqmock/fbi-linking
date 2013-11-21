@@ -42,17 +42,21 @@ public class BillService {
             if (bills.size() > 0) {
                 // 已存在则更新
                 HmfsJmBill origBill = bills.get(0);
+                String pkid = origBill.getPkid();
                 ObjectFieldsCopier.copyFields(bill, origBill);
+                origBill.setPkid(pkid);
                 cnt = mapper.updateByPrimaryKey(origBill);
+                session.commit();
                 session.close();
                 return cnt == 1;
             } else {
                 cnt = mapper.insert(bill);
+                session.commit();
                 session.close();
                 return cnt == 1;
             }
         } else {
-            throw new RuntimeException("缴款单保存失败，状态：" + bill.getBillStsCode() + bill.getBillStsTitle());
+            throw new RuntimeException("状态：" + bill.getBillStsCode() + bill.getBillStsTitle());
         }
     }
 }

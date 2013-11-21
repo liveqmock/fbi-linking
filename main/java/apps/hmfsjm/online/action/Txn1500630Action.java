@@ -31,8 +31,8 @@ public class Txn1500630Action extends AbstractTxnAction {
         try {
             long startNo = Long.parseLong(vchStartNo);
             long endNo = Long.parseLong(vchEndNo);
-            if (startNo < endNo) {
-                throw new RuntimeException("起始编号不能小于终止编号");
+            if (startNo > endNo) {
+                throw new RuntimeException("起始编号不能大于终止编号");
             } else {
                 txn1500630Service.process(msg.branchID, msg.tellerID, startNo, endNo);
             }

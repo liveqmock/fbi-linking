@@ -66,7 +66,10 @@ public class Txn1500631Service {
             vch.setActTxnSn(bill.getActSerialNo());
             vch.setTxnDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
             vch.setTxnTime(new SimpleDateFormat("HHmmss").format(new Date()));
-            return vchMapper.updateByPrimaryKey(vch) == 1;
+            if (vchMapper.updateByPrimaryKey(vch) == 1) {
+                session.commit();
+                return true;
+            } else return false;
         }
     }
 
@@ -86,7 +89,10 @@ public class Txn1500631Service {
             vch.setOperId(tellerID);
             vch.setTxnDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
             vch.setTxnTime(new SimpleDateFormat("HHmmss").format(new Date()));
-            return vchMapper.updateByPrimaryKey(vch) == 1;
+            if (vchMapper.updateByPrimaryKey(vch) == 1) {
+                session.commit();
+                return true;
+            } else return false;
         }
     }
 }

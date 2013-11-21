@@ -42,17 +42,21 @@ public class RefundService {
             if (refunds.size() > 0) {
                 // 已存在则更新
                 HmfsJmRefund origRefund = refunds.get(0);
+                String pkid = origRefund.getPkid();
                 ObjectFieldsCopier.copyFields(refund, origRefund);
+                origRefund.setPkid(pkid);
                 cnt = mapper.updateByPrimaryKey(origRefund);
+                session.commit();
                 session.close();
                 return cnt == 1;
             } else {
                 cnt = mapper.insert(refund);
+                session.commit();
                 session.close();
                 return cnt == 1;
             }
         } else {
-            throw new RuntimeException("缴款单保存失败，状态：" + refund.getBillStsCode() + refund.getBillStsTitle());
+            throw new RuntimeException("状态：" + refund.getBillStsCode() + refund.getBillStsTitle());
         }
     }
 }
