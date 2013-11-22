@@ -31,7 +31,9 @@ public class Txn1500631Action extends AbstractTxnAction {
 
         if (VoucherStatus.USED.getCode().equals(vchSts)) {
             if (StringUtils.isEmpty(billNo)) {
-                throw new RuntimeException("使用票据时必须输入缴款单号");
+                msg.rtnCode = TxnRtnCode.TXN_FAILED.getCode();
+                msg.msgBody = "使用票据时必须输入缴款单号".getBytes(THIRDPARTY_SERVER_CODING);
+                return msg;
             }
         }
 

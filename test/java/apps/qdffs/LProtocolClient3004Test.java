@@ -1,3 +1,5 @@
+package apps.qdffs;
+
 import gateway.domain.LFixedLengthProtocol;
 
 import java.io.*;
@@ -12,7 +14,8 @@ import java.util.Date;
  * Time: 下午3:17
  * To change this template use File | Settings | File Templates.
  */
-public class LProtocolClient3003Test {
+// 不明款上传
+public class LProtocolClient3004Test {
     public static void main(String[] args) {
         try {
             LFixedLengthProtocol t = new LFixedLengthProtocol();
@@ -20,16 +23,18 @@ public class LProtocolClient3003Test {
             t.ueserID = "FIS153";
             t.tellerID = "9999";
             t.branchID = "9999";
-            t.txnCode = "1533003";
+            t.txnCode = "1533004";
             t.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             t.serialNo = t.txnTime;
-            // TODO
-            t.msgBody = "370200|20130731|37101986610050011692|584875.6|103|76021,150660.00      ,D|76025,39600.00       ,D|76027,72.00          ,D|76031,3300.00        ,D|76033,3300.00        ,D|76035,2500.00        ,D|76038,2500.00        ,D|76040,2500.00        ,D|94430,392.00         ,D|94431,216.00         ,D|94434,3300.00        ,D|94435,82350.00       ,D|94437,2500.00        ,D|94439,2500.00        ,D|94441,2500.00        ,D|94443,3300.00        ,D|94445,3300.00        ,D|94447,2500.00        ,D|94449,3300.00        ,D|94451,2500.00        ,D|94453,2500.00        ,D|94456,2500.00        ,D|94458,5300.00        ,D|94460,3300.00        ,D|94463,3300.00        ,D|94465,4500.00        ,D|94467,3300.00        ,D|94471,3300.00        ,D|94473,2500.00        ,D|94475,3300.00        ,D|140295,72.00          ,D|140297,144.00         ,D|140299,15569.60       ,D|140301,3300.00        ,D|140302,3300.00        ,D|140302,3300.00        ,D|94443,3300.00        ,D|94445,3300.00        ,D|94447,2500.00        ,D|94449,3300.00        ,D|94451,2500.00        ,D|94453,2500.00        ,D|94456,2500.00        ,D|94458,5300.00        ,D|94460,3300.00        ,D|94463,3300.00        ,D|94465,4500.00        ,D|94467,3300.00        ,D|94471,3300.00        ,D|94473,2500.00        ,D|94475,3300.00        ,D|140295,72.00          ,D|140297,144.00         ,D|140299,15569.60       ,D|140301,3300.00        ,D|140302,3300.00        ,D|140302,3300.00        ,D".getBytes();
-
+//            t.msgBody = ("370200|BMK081001|112233445566|04||" + t.txnTime.substring(0, 8) + "|101.1|").getBytes();
+//            t.msgBody = ("370200|BMK081002|112233445566|04||" + t.txnTime.substring(0, 8) + "|300.58|").getBytes();
+//            t.msgBody = ("370200|BMK081003|112233445566|04||" + t.txnTime.substring(0, 8) + "|100|").getBytes();
+//            t.msgBody = ("370200|BMK081004|112233445566|04||" + t.txnTime.substring(0, 8) + "|200|").getBytes();
+//            t.msgBody = ("370200|BMK081005|112233445566|04||" + t.txnTime.substring(0, 8) + "|300|").getBytes();
+            t.msgBody = ("370200|BMK081006|112233445566|04||" + t.txnTime.substring(0, 8) + "|400|").getBytes();
             System.out.println("发送报文：" + new String(t.toByteArray()));
 //            Socket socket = new Socket("48.135.44.51", 60001);
-//            Socket socket = new Socket("10.22.0.45", 60001);
-            Socket socket = new Socket("127.0.0.1", 60001);
+            Socket socket = new Socket("10.22.0.45", 60001);
             socket.setSoTimeout(61000);
             OutputStream os = socket.getOutputStream();
             os.write(t.toByteArray());

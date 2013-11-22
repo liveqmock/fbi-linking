@@ -33,7 +33,7 @@ public class Txn1500611Service {
     private BillService billService = new BillService();
     MybatisManager manager = new MybatisManager();
 
-    public Toa process(String tellerID, String serialNo, String billNo) {
+    public Toa process(String tellerID, String branchID, String serialNo, String billNo) {
 
         Tia2001 tia = new Tia2001();
         tia.BODY.PAY_BILLNO = billNo;
@@ -45,6 +45,7 @@ public class Txn1500611Service {
         bill.setCfmTxnCode("2001");
         bill.setActSerialNo(serialNo);
         bill.setOperId(tellerID);
+        bill.setDeptId(branchID);
         bill.setStsFlag(BillStsFlag.BOOKED.getCode());
         SqlSession session = manager.getSessionFactory().openSession();
         try {

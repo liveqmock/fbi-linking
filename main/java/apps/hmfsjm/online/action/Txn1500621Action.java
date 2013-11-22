@@ -32,7 +32,7 @@ public class Txn1500621Action extends AbstractTxnAction {
 
         try {
             // 交易发起
-            Toa3002 toa = (Toa3002) txn1500621Service.process(msg.tellerID, msg.serialNo, refundNo);
+            Toa3002 toa = (Toa3002) txn1500621Service.process(msg.tellerID, msg.branchID, msg.serialNo, refundNo);
             msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
         } catch (Exception e) {
             logger.error("[1500621][3002][hmfsjm退款单退款确认]失败", e);

@@ -1,3 +1,5 @@
+package apps.qdffs;
+
 import gateway.domain.LFixedLengthProtocol;
 
 import java.io.*;

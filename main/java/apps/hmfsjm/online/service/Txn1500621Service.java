@@ -32,7 +32,7 @@ public class Txn1500621Service {
     private RefundService refundService = new RefundService();
     MybatisManager manager = new MybatisManager();
 
-    public Toa process(String tellerID, String serialNo, String refundNo) {
+    public Toa process(String tellerID, String branchID, String serialNo, String refundNo) {
 
         Tia3002 tia = new Tia3002();
         tia.BODY.REFUND_BILLNO = refundNo;
@@ -44,6 +44,7 @@ public class Txn1500621Service {
         refund.setCfmTxnCode("3002");
         refund.setActSerialNo(serialNo);
         refund.setOperId(tellerID);
+        refund.setDeptId(branchID);
         refund.setStsFlag(BillStsFlag.BOOKED.getCode());
         SqlSession session = manager.getSessionFactory().openSession();
         try {

@@ -24,7 +24,7 @@ public class Txn1500620Service {
     private static final Logger logger = LoggerFactory.getLogger(Txn1500620Service.class);
     private RefundService refundService = new RefundService();
 
-    public Toa process(String tellerID, String billNo) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    public Toa process(String tellerID, String branchID, String billNo) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
         Tia3001 tia = new Tia3001();
         tia.BODY.REFUND_BILLNO = billNo;
@@ -40,7 +40,7 @@ public class Txn1500620Service {
                 " ×´Ì¬Âë£º" + toa.BODY.BILL_STS_CODE +
                 " ×´Ì¬ËµÃ÷£º" + toa.BODY.BILL_STS_TITLE);
 
-        HmfsJmRefund refund = transToa3001ToRefund(tellerID, toa);
+        HmfsJmRefund refund = transToa3001ToRefund(tellerID, branchID, toa);
         // ±£´æ
         if (refundService.saveRefundBill(refund)) {
             return toa;
@@ -49,7 +49,7 @@ public class Txn1500620Service {
         }
     }
 
-    private HmfsJmRefund transToa3001ToRefund(String tellerID, Toa3001 toa3001) {
+    private HmfsJmRefund transToa3001ToRefund(String tellerID, String branchID, Toa3001 toa3001) {
         HmfsJmRefund refund = new HmfsJmRefund();
         refund.setBillno(toa3001.BODY.REFUND_BILLNO);
         refund.setBillStsCode(toa3001.BODY.BILL_STS_CODE);
@@ -74,6 +74,7 @@ public class Txn1500620Service {
         refund.setRelateBillno(toa3001.BODY.PAY_BILL_NO);
         refund.setBankUser(toa3001.BODY.BANK_USER);
         refund.setOperId(tellerID);
+        refund.setDeptId(branchID);
         refund.setBankCfmDate(toa3001.BODY.BANK_CFM_DATE);
         refund.setPayMoney(StringUtils.isEmpty(toa3001.BODY.PAY_MONEY) ? null : new BigDecimal(toa3001.BODY.PAY_MONEY));
         refund.setAcceptDate(toa3001.BODY.ACCEPT_DATE);

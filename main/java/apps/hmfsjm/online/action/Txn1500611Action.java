@@ -28,21 +28,9 @@ public class Txn1500611Action extends AbstractTxnAction {
         logger.info("[1500611][2001][hmfsjm缴款书缴款确认][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
                 + "  [缴款书编号] " + billNo);
 
-        // TODO 测试用 重复交款
-
-        if (true) {
-            StringBuilder strBuilder = new StringBuilder();
-            strBuilder.append(billNo).append("|")                   // 缴款书编号
-                    .append(nullToEmpty("0000")).append("|")     // 缴款单状态代码
-                    .append(nullToEmpty("缴款成功")).append("|")    // 缴款单状态说明
-                    .append(nullToEmpty("")).append("|");          // 保留域
-            msg.msgBody = strBuilder.toString().getBytes(THIRDPARTY_SERVER_CODING);
-            return msg;
-        }
-
         try {
 
-            Toa2001 toa = (Toa2001) txn1500611Service.process(msg.tellerID, msg.serialNo, billNo);
+            Toa2001 toa = (Toa2001) txn1500611Service.process(msg.tellerID, msg.branchID, msg.serialNo, billNo);
             msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
             if (!BillTxnStatus.PAYED_SECCESS.getCode().equals(toa.BODY.BILL_STS_CODE)
                     && !BillTxnStatus.CONFIRMED.getCode().equals(toa.BODY.BILL_STS_CODE)) {

@@ -1,3 +1,5 @@
+package apps.qdffs;
+
 import gateway.domain.LFixedLengthProtocol;
 
 import java.io.*;
@@ -12,7 +14,7 @@ import java.util.Date;
  * Time: 下午3:17
  * To change this template use File | Settings | File Templates.
  */
-public class LProtocolClient3013Test {
+public class LProtocolClient3002Test {
     public static void main(String[] args) {
         try {
             LFixedLengthProtocol t = new LFixedLengthProtocol();
@@ -20,13 +22,13 @@ public class LProtocolClient3013Test {
             t.ueserID = "FIS153";
             t.tellerID = "9999";
             t.branchID = "9999";
-            t.txnCode = "1533013";
+            t.txnCode = "1533002";
+            t.serialNo = "fis201305311641";
             t.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            t.serialNo = t.txnTime;
-            t.msgBody = "01|121000100208".getBytes();
+            t.msgBody = "01|121000100208|||01||||||||青岛市财政局|浦发银行|112233445566|200.00|0|0|3712|||||".getBytes();
+//            t.msgBody = "02|139000000208|||01||||||||青岛市财政局|浦发银行|112233445566|4770.00|0|0|8223|||||".getBytes();
 
             System.out.println("发送报文：" + new String(t.toByteArray()));
-//            Socket socket = new Socket("48.135.44.51", 60001);
             Socket socket = new Socket("10.22.0.45", 60001);
             socket.setSoTimeout(61000);
             OutputStream os = socket.getOutputStream();

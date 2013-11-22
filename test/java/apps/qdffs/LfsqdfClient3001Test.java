@@ -1,3 +1,5 @@
+package apps.qdffs;
+
 import apps.fis.socket.codec.B64Code;
 import gateway.domain.LFixedLengthProtocol;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;

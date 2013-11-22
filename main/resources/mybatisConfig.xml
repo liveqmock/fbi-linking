@@ -23,5 +23,6 @@ PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN" "http://ibatis.apache.org/dtd/
 		<mapper resource="apps/hmfsjm/repository/mapper/HmfsJmBillMapper.xml" />
 		<mapper resource="apps/hmfsjm/repository/mapper/HmfsJmRefundMapper.xml" />
 		<mapper resource="apps/hmfsjm/repository/mapper/HmfsJmVoucherMapper.xml" />
+		<mapper resource="apps/hmfsjm/repository/mapper/common/CommonMapper.xml" />
 	</mappers>
 </configuration>

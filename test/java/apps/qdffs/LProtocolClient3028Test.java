@@ -1,3 +1,5 @@
+package apps.qdffs;
+
 import gateway.domain.LFixedLengthProtocol;
 
 import java.io.*;
@@ -12,7 +14,7 @@ import java.util.Date;
  * Time: 下午3:17
  * To change this template use File | Settings | File Templates.
  */
-public class LProtocolClient3027Test {
+public class LProtocolClient3028Test {
     public static void main(String[] args) {
         try {
             LFixedLengthProtocol t = new LFixedLengthProtocol();
@@ -20,10 +22,10 @@ public class LProtocolClient3027Test {
             t.ueserID = "FIS153";
             t.tellerID = "9999";
             t.branchID = "9999";
-            t.txnCode = "1533027";
+            t.txnCode = "1533028";
             t.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             t.serialNo = t.txnTime;
-            t.msgBody = "370200|DBP081004||".getBytes();
+            t.msgBody = "2013-07-05".getBytes();
 
             System.out.println("发送报文：" + new String(t.toByteArray()));
 //            Socket socket = new Socket("48.135.44.51", 60001);

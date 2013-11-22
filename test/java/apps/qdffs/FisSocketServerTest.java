@@ -1,3 +1,5 @@
+package apps.qdffs;
+
 import apps.fis.domain.txn.Toa3001;
 import apps.fis.socket.codec.B64Code;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;

@@ -1,3 +1,5 @@
+package apps.hmfsjm;
+
 import gateway.domain.LFixedLengthProtocol;
 
 import java.io.*;
@@ -6,31 +8,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
- * User: zhangxiaobo
- * Date: 13-3-28
- * Time: 下午3:17
- * To change this template use File | Settings | File Templates.
+ * User: zhanrui
+ * Date: 13-9-22
  */
-public class LProtocolClient3007Test {
+public class Txn1500632Test {
     public static void main(String[] args) {
         try {
             LFixedLengthProtocol t = new LFixedLengthProtocol();
-            t.appID = "fis";
-            t.ueserID = "FIS153";
+            t.appID = "hmfsjm";
+            t.ueserID = "FIS150";
             t.tellerID = "9999";
             t.branchID = "9999";
-            t.txnCode = "1533007";
+            t.txnCode = "1500632";
             t.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            t.serialNo = t.txnTime;
-            // 行政区划
-            // 执收单位编码
-            // 收入项目编码
-            t.msgBody = "370200|003001|00100202".getBytes();
+            t.serialNo = "CCB" + t.txnTime;
+
+            t.msgBody = "20131015|".getBytes();
 
             System.out.println("发送报文：" + new String(t.toByteArray()));
-            Socket socket = new Socket("48.135.44.51", 60001);
-            socket.setSoTimeout(61000);
+            //Socket socket = new Socket("10.22.0.45", 60001);
+            Socket socket = new Socket("localhost", 60001);
+            socket.setSoTimeout(60000);
             OutputStream os = socket.getOutputStream();
             os.write(t.toByteArray());
             os.flush();
