@@ -17,7 +17,7 @@ public enum MybatisFactory {
     MybatisFactory(){
         Reader reader = null;
         try {
-            reader = Resources.getResourceAsReader("mybatisConfig.xml");
+            reader = Resources.getResourceAsReader("hmfsjmMybatisConfig.xml");
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("MYBATIS 参数文件读取错误。",e);

@@ -12,14 +12,20 @@ import java.util.List;
  */
 public interface CommonMapper {
 
-    @Select("select v.vch_num as vchnum, v.vch_sts as vchsts, v.billno as billno, " +
-            " v.txn_date as txndate, b.txn_amt as txnamt from hmfs_jm_voucher v " +
-            " left join hmfs_jm_bill b " +
-            " on v.billno = b.billno " +
-            " where v.txn_date = #{date8} and v.vch_sts != '1' " +
-            " order by v.vch_sts, v.vch_num, v.txn_date desc")
+    @Select("select v.vch_num as vchnum, v.vch_sts as vchsts, b.billno as billno, " +
+            " b.oper_date as txndate, b.txn_amt as txnamt from hmfs_jm_bill b " +
+            " left join hmfs_jm_voucher v " +
+            " on b.billno = v.billno " +
+            " where b.oper_date = #{date8} and v.vch_sts != '1' " +
+            " order by b.billno, v.vch_sts, v.vch_num desc")
     List<VoucherBill> qryVoucherBills(@Param("date8") String date8);
 
+    @Select("select v.vch_num as vchnum, v.vch_sts as vchsts, b.billno as billno, " +
+            " b.oper_date as txndate, b.txn_amt as txnamt from hmfs_jm_bill b  " +
+            " left join hmfs_jm_voucher v" +
+            " on b.billno = v.billno " +
+            " where b.billno = #{billNo}")
+    List<VoucherBill> qryVoucher(@Param("billNo") String billNo);
 
     @Select("select  count(v.vch_num) from hmfs_jm_voucher v " +
             " where v.txn_date = #{date8} and v.vch_sts = #{vchsts} ")

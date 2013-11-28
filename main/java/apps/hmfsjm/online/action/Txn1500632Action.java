@@ -24,14 +24,17 @@ public class Txn1500632Action extends AbstractTxnAction {
         String[] fieldArray = StringUtils.splitByWholeSeparatorPreserveAllTokens(new String(msg.msgBody), "|");
         // 日期
         String date8 = fieldArray[0];
+        // 缴款单号
+        String billNo = fieldArray[1];
 
-        logger.info("[1500632票据使用情况查询][日期]" + date8 + " [网点]" + msg.branchID + "[柜员]" + msg.tellerID);
+        logger.info("[1500632票据使用情况查询][日期]" + date8 + "[单号]" + billNo +
+                " [网点]" + msg.branchID + "[柜员]" + msg.tellerID);
 
         try {
-            String strVchs = txn1500632Service.process(date8);
+            String strVchs = txn1500632Service.process(date8, billNo);
             if (StringUtils.isEmpty(strVchs)) {
                 msg.rtnCode = TxnRtnCode.TXN_FAILED.getCode();
-                msg.msgBody = "没有查询到该日期使用的票据".getBytes(THIRDPARTY_SERVER_CODING);
+                msg.msgBody = "没有查询到票据信息".getBytes(THIRDPARTY_SERVER_CODING);
             } else {
                 msg.msgBody = strVchs.getBytes(THIRDPARTY_SERVER_CODING);
             }
