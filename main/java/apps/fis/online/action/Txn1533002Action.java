@@ -181,6 +181,7 @@ public class Txn1533002Action extends AbstractTxnAction {
         // 发送到财政局
         Tia3002 tia3002 = new Tia3002();
         ObjectFieldsCopier.copyFields(info, tia3002.BODY.DATA);
+        tia3002.BODY.DATA.BMKYWXH = info.getBmkywxh();
         for (FsQdfPaymentItem item : items) {
             Tia3002.Body.Data.Xmmx xmmx = new Tia3002.Body.Data.Xmmx();
             ObjectFieldsCopier.copyFields(item, xmmx);

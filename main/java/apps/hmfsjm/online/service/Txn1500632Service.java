@@ -24,9 +24,9 @@ public class Txn1500632Service {
 
         SqlSession session = manager.getSessionFactory().openSession();
         CommonMapper mapper = session.getMapper(CommonMapper.class);
+        String useCnt = mapper.qryVchCnt(date8, VoucherStatus.USED.getCode());
+        String delCnt = mapper.qryVchCnt(date8, VoucherStatus.CANCEL.getCode());
         if (StringUtils.isEmpty(billNo)) {
-            String useCnt = mapper.qryVchCnt(date8, VoucherStatus.USED.getCode());
-            String delCnt = mapper.qryVchCnt(date8, VoucherStatus.CANCEL.getCode());
             List<VoucherBill> vchList = mapper.qryVoucherBills(date8);
             String vchs = transVchsToStr(vchList);
             if (StringUtils.isEmpty(vchs)) {
@@ -38,7 +38,7 @@ public class Txn1500632Service {
             if (vchList == null || vchList.isEmpty()) {
                 return null;
             } else {
-                return transVchsToStr(vchList);
+                return useCnt + "|" + delCnt + "|" + transVchsToStr(vchList);
             }
         }
     }
@@ -63,10 +63,16 @@ public class Txn1500632Service {
                 } else {
                     vchBuilder.append(StringPad.rightPad4ChineseToByteLength(vb.getTxnamt(), 24, " "));
                 }
-                vchBuilder.append(StringPad.rightPad4ChineseToByteLength(vb.getVchnum(), 24, ""));
-                vchBuilder.append(VoucherStatus.valueOfAlias(vb.getVchsts()).getTitle());
-                vchBuilder.append("  ");
-
+                if (StringUtils.isEmpty(vb.getVchnum())) {
+                    vchBuilder.append("нч");
+                } else {
+                    vchBuilder.append(StringPad.rightPad4ChineseToByteLength(vb.getVchnum(), 20, ""));
+                }
+                if (!StringUtils.isEmpty(vb.getVchsts())) {
+                    vchBuilder.append(VoucherStatus.valueOfAlias(vb.getVchsts()).getTitle());
+                } else {
+                    vchBuilder.append("");
+                }
                 vchBuilder.append(",");
             }
             return vchBuilder.toString();

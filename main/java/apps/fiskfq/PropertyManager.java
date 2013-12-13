@@ -1,4 +1,4 @@
-package apps.fishd;
+package apps.fiskfq;
 
 import java.io.*;
 import java.util.Calendar;
@@ -9,7 +9,7 @@ public class PropertyManager {
 
     private static PropertyManager manager = null;
     private static Object managerLock = new Object();
-    private static String propsName = "/fishd_prjcfg.properties";
+    private static String propsName = "/fiskfq_prjcfg.properties";
     private Properties properties = null;
     private Object propertiesLock = new Object();
     private String resourceURI;

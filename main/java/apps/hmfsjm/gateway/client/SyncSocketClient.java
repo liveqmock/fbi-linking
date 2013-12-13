@@ -1,6 +1,5 @@
 package apps.hmfsjm.gateway.client;
 
-import apps.fis.SystemParameter;
 import apps.hmfsjm.PropertyManager;
 import apps.hmfsjm.gateway.codec.XmlMessageDecoder;
 import apps.hmfsjm.gateway.codec.XmlMessageEncoder;
@@ -12,13 +11,10 @@ import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.oio.OioClientSocketChannelFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.concurrent.Executors;
 
 /**
@@ -40,7 +36,7 @@ public class SyncSocketClient {
         InputStream is = socket.getInputStream();
         byte[] lengthBytes = new byte[8];
         is.read(lengthBytes);
-        int toReadlength = Integer.parseInt(new String(lengthBytes)) - 8;
+        int toReadlength = Integer.parseInt(new String(lengthBytes).trim()) - 8;
         byte[] dataBytes = new byte[toReadlength];
         byte[] bytes = new byte[64];
         int index = 0;

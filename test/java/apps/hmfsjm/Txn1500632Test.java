@@ -23,7 +23,7 @@ public class Txn1500632Test {
             t.txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             t.serialNo = "CCB" + t.txnTime;
 
-            t.msgBody = "20131015|".getBytes();
+            t.msgBody = "20131005|".getBytes();
 
             System.out.println("·¢ËÍ±¨ÎÄ£º" + new String(t.toByteArray()));
             //Socket socket = new Socket("10.22.0.45", 60001);

@@ -1,0 +1,79 @@
+package apps.fiskfq.online.action;
+
+import apps.fiskfq.enums.TxnRtnCode;
+import gateway.domain.LFixedLengthProtocol;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+//	缴款查询
+@Component
+public class Txn1533010Action extends AbstractTxnAction {
+
+    private static Logger logger = LoggerFactory.getLogger(Txn1533010Action.class);
+
+    @Override
+    public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
+        /*
+        缴款书样式编码
+票号
+全票面校验码
+收款金额
+年度
+         */
+
+        // 解析报文体
+        String[] fieldArray = StringUtils.splitByWholeSeparatorPreserveAllTokens(new String(msg.msgBody), "|");
+        // 缴款书样式编码
+        String typeCode = fieldArray[0];
+
+        // 缴款书编号
+        String billNo = fieldArray[1];
+
+        logger.info("[1533010缴款信息查询][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
+                + "  [样式码]" + typeCode + "  [缴款书编号] " + billNo);
+
+
+        try {
+
+//            Toa1001 toa = (Toa1001) txn1500610Service.process(msg.tellerID, msg.branchID, billNo);
+//            msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
+
+        } catch (Exception e) {
+            logger.error("[1533010][fishd缴款单查询]失败", e);
+            msg.rtnCode = TxnRtnCode.TXN_EXECUTE_FAILED.getCode();
+            String errmsg = e.getMessage();
+            if (StringUtils.isEmpty(errmsg)) {
+                msg.msgBody = TxnRtnCode.TXN_EXECUTE_FAILED.getTitle().getBytes(THIRDPARTY_SERVER_CODING);
+            } else
+                msg.msgBody = e.getMessage().getBytes(THIRDPARTY_SERVER_CODING);
+        }
+        return msg;
+    }
+
+   /* private String assembleStr(Toa1001 toa1001) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append(toa1001.BODY.PAY_BILLNO).append("|")                   // 缴款书编号
+                .append(nullToEmpty(toa1001.BODY.BILL_STS_CODE)).append("|")     // 缴款单状态代码
+                .append(nullToEmpty(toa1001.BODY.BILL_STS_TITLE)).append("|")    // 缴款单状态说明
+                .append(nullToEmpty(toa1001.BODY.HOUSE_ID)).append("|")          // 房屋编号
+                .append(nullToEmpty(toa1001.BODY.HOUSE_LOCATION)).append("|")    // 房屋坐落
+                .append(nullToEmpty(toa1001.BODY.HOUSE_AREA)).append("|")        // 建筑面积
+                .append(nullToEmpty(toa1001.BODY.STANDARD)).append("|")          // 缴存标准
+                .append(nullToEmpty(toa1001.BODY.TXN_AMT)).append("|")           // 金额
+                .append(nullToEmpty(toa1001.BODY.PAY_BANK)).append("|")          // 缴款银行
+                .append(nullToEmpty(toa1001.BODY.AREA_ACCOUNT)).append("|")      // 专户账号
+                .append(nullToEmpty(toa1001.BODY.HOUSE_ACCOUNT)).append("|")     // 分户账号
+                .append(nullToEmpty(toa1001.BODY.CARD_TYPE)).append("|")         // 证件类型
+                .append(nullToEmpty(toa1001.BODY.CARD_NO)).append("|")           // 证件号码
+                .append(nullToEmpty(toa1001.BODY.OWNER)).append("|")             // 业主姓名
+                .append(nullToEmpty(toa1001.BODY.TEL)).append("|")               // 联系电话
+                .append(nullToEmpty(toa1001.BODY.RESERVE)).append("|");          // 保留域
+        return strBuilder.toString();
+    }*/
+
+    private String nullToEmpty(String str) {
+        return str == null ? "" : str;
+    }
+}

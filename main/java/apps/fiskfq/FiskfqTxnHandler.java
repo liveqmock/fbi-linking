@@ -1,4 +1,4 @@
-package apps.fishd;
+package apps.fiskfq;
 
 import apps.TxnHandler;
 import apps.hmfsjm.online.action.AbstractTxnAction;
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import startup.AppsStartManager;
 
 @Component
-public class FishdTxnHandler extends TxnHandler {
-    private static final Logger logger = LoggerFactory.getLogger(FishdTxnHandler.class);
+public class FiskfqTxnHandler extends TxnHandler {
+    private static final Logger logger = LoggerFactory.getLogger(FiskfqTxnHandler.class);
 
     @Override
     public LFixedLengthProtocol execute(LFixedLengthProtocol tia) throws Exception {
