@@ -10,14 +10,14 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.io.Serializable;
 
 /**
- * 通用收妥回执
+ * 手工票录入回执
  */
 
 @XStreamAlias("Root")
-public class Toa9000 extends Toa {
+public class Toa1457 extends Toa {
     public ToaHeader Head = new ToaHeader();
     public Body Body = new Body();
-    public apps.fiskfq.gateway.domain.base.xml.Signs Signs = new Signs();
+    public Signs Signs = new Signs();
 
 
     public static class Body implements Serializable {
@@ -31,26 +31,39 @@ public class Toa9000 extends Toa {
     }
 
 
+    /*
+   chr_id	缴款书ID
+billtype_code	缴款书样式编码
+billtype_name	缴款书样式名称
+bill_no	票号
+verify_no	缴款书全票面校验码
+makedate	开票日期
+ien_code	执收单位业务码
+ien_name	执收单位名称
+set_year	年度
+succ_code	OK
+
+
+     */
     public static class Record implements Serializable {
 
-        /*
-        ori_datatype	原数据类型	NString	4		M
-        ori_send_orgcode	原发起方编码	NString	[1,15]		M
-        ori_entrust_date	原委托日期	Date		请求发起日期	M
-        result	公共处理结果	String	4		M
-        add_word	附言	GBString	[1,60]		O
-         */
-        public String ori_datatype = "";
-        public String ori_send_orgcode = "";
-        public String ori_entrust_date = "";
-        public String result = "";
-        public String add_word = "";
+        public String chr_id = "";
+        public String billtype_code = "";
+        public String billtype_name = "";
+        public String bill_no = "";
+        public String verify_no = "";
+        public String makedate = "";
+        public String ien_code = "";
+        public String ien_name = "";
+        public String set_year = "";
+        public String succ_code = "";
     }
 
     @Override
     public Toa toToa(String xml) {
         XStream xs = new XStream(new DomDriver());
-        xs.processAnnotations(Toa9000.class);
-        return (Toa9000) xs.fromXML(xml);
+        xs.processAnnotations(Toa1457.class);
+        return (Toa1457) xs.fromXML(xml);
     }
+
 }

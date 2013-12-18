@@ -1,6 +1,7 @@
 package apps.fiskfq.gateway.domain.txn;
 
 import apps.fiskfq.gateway.domain.base.Toa;
+import apps.fiskfq.gateway.domain.base.xml.Signs;
 import apps.fiskfq.gateway.domain.base.xml.ToaHeader;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -9,13 +10,14 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.io.Serializable;
 
 /**
- * 退出回执
+ * 撤销收款回执
  */
 
 @XStreamAlias("Root")
-public class Toa9908 extends Toa {
+public class Toa1409 extends Toa {
     public ToaHeader Head = new ToaHeader();
     public Body Body = new Body();
+    public Signs Signs = new Signs();
 
 
     public static class Body implements Serializable {
@@ -29,20 +31,28 @@ public class Toa9908 extends Toa {
     }
 
 
+    /*
+    chr_id	等于请求缴款书ID
+billtype_code	等于请求缴款书样式编码
+bill_no	等于请求票号
+set_year	等于请求年度
+succ_code	OK
+
+     */
     public static class Record implements Serializable {
 
-        /*
-        login_result	结果
-        add_word	附言
-         */
-        public String login_result = "";
-        public String add_word = "";
+        public String chr_id = "";
+        public String billtype_code = "";
+        public String bill_no = "";
+        public String set_year = "";
+        public String succ_code = "";
     }
 
     @Override
     public Toa toToa(String xml) {
         XStream xs = new XStream(new DomDriver());
-        xs.processAnnotations(Toa9908.class);
-        return (Toa9908) xs.fromXML(xml);
+        xs.processAnnotations(Toa1409.class);
+        return (Toa1409) xs.fromXML(xml);
     }
+
 }

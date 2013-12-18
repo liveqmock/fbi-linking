@@ -23,7 +23,8 @@ public class Ibator {
         Ibator ibator = new Ibator();
 
 //        ibator.run("resources/fisjiaozhou_generatorConfig.xml");
-        ibator.run("resources/hmfsjm_generatorConfig.xml");
+//        ibator.run("resources/hmfsjm_generatorConfig.xml");
+        ibator.run("resources/fiskfq_generatorConfig.xml");
 
     }
 
