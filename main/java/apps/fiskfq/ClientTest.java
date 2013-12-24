@@ -22,7 +22,6 @@ public class ClientTest {
 
     public static void test9905() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
         Tia9905 tia = new Tia9905();
-        tia.Head.dataType = "9905";
         tia.Body.Object.Record.user_code = "ccb01";
         tia.Body.Object.Record.password = "000000";
         tia.Body.Object.Record.new_password = "";

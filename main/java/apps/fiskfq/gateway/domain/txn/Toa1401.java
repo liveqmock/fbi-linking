@@ -15,7 +15,6 @@ import java.util.List;
  * 应收数据查询回执
  */
 
-@XStreamAlias("Root")
 public class Toa1401 extends Toa {
     public ToaHeader Head = new ToaHeader();
     public Body Body = new Body();
