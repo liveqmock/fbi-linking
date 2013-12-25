@@ -4,6 +4,7 @@ import apps.fiskfq.enums.TxnRtnCode;
 import apps.fiskfq.gateway.domain.txn.Tia2401;
 import apps.fiskfq.gateway.domain.txn.Tia2402;
 import apps.fiskfq.gateway.domain.txn.Toa1401;
+import apps.fiskfq.online.service.Txn1534010Service;
 import apps.fiskfq.online.service.Txn1534011Service;
 import gateway.domain.LFixedLengthProtocol;
 import org.apache.commons.lang.StringUtils;
@@ -11,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-//	应收数据确认
+//	缴款确认
 @Component
 public class Txn1534011Action extends AbstractTxnAction {
 
@@ -41,7 +42,7 @@ set_year	年度
         // 年度
         String setYear = fieldArray[4];
 
-        logger.info("[1534011应收数据确认][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
+        logger.info("[1534011缴款确认][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
                 + "  [样式码]" + typeCode + "  [缴款书编号] " + billNo);
 
 
@@ -53,11 +54,11 @@ set_year	年度
             tia.Body.Object.Record.set_year = setYear;
             tia.Head.msgId = msg.txnTime + msg.serialNo;
             tia.Head.workDate = msg.txnTime.substring(0, 8);
-
             txn1534011Service.process(msg.tellerID, msg.branchID, tia);
-            /*Toa1401 toa = (Toa1401) txn1534011Service.process(msg.tellerID, msg.branchID, tia);
-            msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
-*/
+
+//            Toa1401 toa = (Toa1401) txn1534010Service.process(msg.tellerID, msg.branchID, tia);
+//            msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
+
 
         } catch (Exception e) {
             logger.error("[1534011][fiskfq应收数据确认]失败", e);

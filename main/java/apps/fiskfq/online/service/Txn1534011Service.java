@@ -20,8 +20,8 @@ public class Txn1534011Service {
     public Toa process(String tellerID, String branchID, Tia2402 tia2402) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
 
-        // 交易发起
-      /*  Toa1401 toa = (Toa1401) new SyncSocketClient().onRequest(tia2401);
+        /*// 交易发起
+        Toa1401 toa = (Toa1401) new SyncSocketClient().onRequest(tia2401);
 
         if (toa == null) throw new RuntimeException("网络异常。");
 

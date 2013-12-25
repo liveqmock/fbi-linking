@@ -20,8 +20,8 @@ public class Txn1534010Service {
     public Toa process(String tellerID, String branchID, Tia2401 tia2401) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
 
-        // 交易发起
-      /*  Toa1401 toa = (Toa1401) new SyncSocketClient().onRequest(tia2401);
+        /*// 交易发起
+        Toa1401 toa = (Toa1401) new SyncSocketClient().onRequest(tia2401);
 
         if (toa == null) throw new RuntimeException("网络异常。");
 
@@ -29,6 +29,8 @@ public class Txn1534010Service {
                 " 缴款书ID：" + toa.Body.Object.Record.chr_id +
                 " 票号：" + toa.Body.Object.Record.bill_no +
                 " 明细数：" + toa.Body.Object.Record.Object.size());*/
+        tia2401.Head.src = "CCB-370211";
+        tia2401.Head.des = "CZ-370211";
         new SyncSocketClient().onRequest(tia2401);
 
         // TODO　业务逻辑

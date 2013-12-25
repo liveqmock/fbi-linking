@@ -53,9 +53,10 @@ set_year	Äê¶È
             tia.Body.Object.Record.set_year = setYear;
             tia.Head.msgId = msg.txnTime + msg.serialNo;
             tia.Head.workDate = msg.txnTime.substring(0, 8);
+            txn1534010Service.process(msg.tellerID, msg.branchID, tia);
 
-            Toa1401 toa = (Toa1401) txn1534010Service.process(msg.tellerID, msg.branchID, tia);
-            msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
+//            Toa1401 toa = (Toa1401) txn1534010Service.process(msg.tellerID, msg.branchID, tia);
+//            msg.msgBody = assembleStr(toa).getBytes(THIRDPARTY_SERVER_CODING);
 
 
         } catch (Exception e) {
