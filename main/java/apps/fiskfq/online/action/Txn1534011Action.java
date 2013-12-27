@@ -21,37 +21,49 @@ public class Txn1534011Action extends AbstractTxnAction {
 
     @Override
     public LFixedLengthProtocol process(LFixedLengthProtocol msg) throws Exception {
-        /*
-        billtype_code	缴款书样式编码
-bill_no	票号
-verify_no	全票面校验码
-bill_money	收款金额
-set_year	年度
-         */
+
 
         // 解析报文体
         String[] fieldArray = StringUtils.splitByWholeSeparatorPreserveAllTokens(new String(msg.msgBody), "|");
         // 缴款书样式编码
-        String typeCode = fieldArray[0];
-        // 票号
-        String billNo = fieldArray[1];
-        // 全票面校验码
-        String verifyNo = fieldArray[2];
-        // 收款金额
+        String chrid = fieldArray[0];
+
+        String billtype_code = fieldArray[1];
+        String billno = fieldArray[2];
         String billMoney = fieldArray[3];
-        // 年度
-        String setYear = fieldArray[4];
+        String bank_indate = fieldArray[4];
+        String incomestatus = fieldArray[5];
+        String pm_code = fieldArray[6];
+        String cheque_no = fieldArray[7];
+        String payerbank = fieldArray[8];
+        String payeraccount = fieldArray[9];
+        String set_year = fieldArray[10];
+        String route_user_code = fieldArray[11];
+        String license = fieldArray[12];
+        String business_id = fieldArray[13];
+
 
         logger.info("[1534011缴款确认][网点号]" + msg.branchID + "[柜员号]" + msg.tellerID
-                + "  [样式码]" + typeCode + "  [缴款书编号] " + billNo);
+                + "  [样式码]" + billtype_code + "  [缴款书编号] " + billno + "[金额]" + billMoney);
 
 
         try {
             Tia2402 tia = new Tia2402();
-            tia.Body.Object.Record.billtype_code = typeCode;
-            tia.Body.Object.Record.bill_no = billNo;
+            tia.Body.Object.Record.chr_id = chrid;
+            tia.Body.Object.Record.billtype_code = billtype_code;
+            tia.Body.Object.Record.bill_no = billno;
             tia.Body.Object.Record.bill_money = billMoney;
-            tia.Body.Object.Record.set_year = setYear;
+            tia.Body.Object.Record.bank_indate = bank_indate;
+            tia.Body.Object.Record.incomestatus = incomestatus;
+            tia.Body.Object.Record.pm_code = pm_code;
+            tia.Body.Object.Record.cheque_no = cheque_no;
+            tia.Body.Object.Record.payerbank = payerbank;
+            tia.Body.Object.Record.payeraccount = payeraccount;
+
+            tia.Body.Object.Record.set_year = set_year;
+            tia.Body.Object.Record.route_user_code = route_user_code;
+            tia.Body.Object.Record.license = license;
+            tia.Body.Object.Record.business_id = business_id;
             tia.Head.msgId = msg.txnTime + msg.serialNo;
             tia.Head.workDate = msg.txnTime.substring(0, 8);
             txn1534011Service.process(msg.tellerID, msg.branchID, tia);

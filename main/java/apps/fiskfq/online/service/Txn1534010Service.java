@@ -1,6 +1,7 @@
 package apps.fiskfq.online.service;
 
 import apps.fiskfq.gateway.client.SyncSocketClient;
+import apps.fiskfq.gateway.domain.ToaXml;
 import apps.fiskfq.gateway.domain.base.Toa;
 import apps.fiskfq.gateway.domain.txn.Tia2401;
 import apps.fiskfq.gateway.domain.txn.Toa1401;
@@ -31,7 +32,7 @@ public class Txn1534010Service {
                 " 明细数：" + toa.Body.Object.Record.Object.size());*/
         tia2401.Head.src = "CCB-370211";
         tia2401.Head.des = "CZ-370211";
-        new SyncSocketClient().onRequest(tia2401);
+        ToaXml toa = (ToaXml)new SyncSocketClient().onRequest(tia2401);
 
         // TODO　业务逻辑
 

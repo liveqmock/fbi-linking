@@ -1,7 +1,7 @@
 package apps.fiskfq;
 
 import apps.TxnHandler;
-import apps.hmfsjm.online.action.AbstractTxnAction;
+import apps.fiskfq.online.action.AbstractTxnAction;
 import gateway.domain.LFixedLengthProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
