@@ -1,5 +1,6 @@
 package apps.fiskfq.gateway.client;
 
+import apps.fiskfq.gateway.domain.txn.Toa9000;
 import apps.fiskfq.PropertyManager;
 import apps.fiskfq.gateway.domain.base.Tia;
 import apps.fiskfq.gateway.domain.base.Toa;
@@ -62,7 +63,13 @@ public class CustomCodeHandler {
         String msgdata = new String(bytes, 69 + authLen, bytes.length - 69 - authLen);
 
         Toa toa = null;
-        if ("9910".equals(txnCode)) {
+
+        if (!"9910".equals(txnCode) && !"9906".equals(txnCode) && !"9000".equals(txnCode)) {
+            Class clazz = Class.forName("apps.fiskfq.gateway.domain.base.ToaXml");
+            Toa tmptoa = (Toa) clazz.newInstance();
+            toa = tmptoa.toBean(msgdata);
+            logger.info("返回报文对象实例化完成 Toaxml");
+        } else if ("9910".equals(txnCode)) {
             toa = new Toa9910();
             Toa9910 toa9910 = (Toa9910) toa.toBean(msgdata);
             logger.info("返回报文对象实例化完成 9910");
@@ -74,12 +81,14 @@ public class CustomCodeHandler {
             logger.info("返回报文对象实例化完成 9906");
             // TODO 保存授权码和授权码长度
 
-        } else {
-            Class clazz = Class.forName("apps.fiskfq.gateway.domain.base.ToaXml");
-            Toa tmptoa = (Toa) clazz.newInstance();
-            toa = tmptoa.toBean(msgdata);
-            logger.info("返回报文对象实例化完成 Toaxml");
+        } else if ("9000".equals(txnCode)) {
+            toa = new Toa9000();
+            Toa9000 toa9000 = (Toa9000) toa.toBean(msgdata);
+            logger.info("返回报文对象实例化完成 9000");
+            throw new RuntimeException(toa9000.Body.Object.Record.result + toa9000.Body.Object.Record.add_word);
 
+        } else {
+            throw new RuntimeException("系统无法解析交易码" + txnCode);
         }
         return toa;
     }

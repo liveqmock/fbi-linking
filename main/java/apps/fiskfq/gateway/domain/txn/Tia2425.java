@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -69,11 +70,14 @@ business_id	交易流水号
     @Override
     public String toString() {
 
-        Head.msgId = new SimpleDateFormat("yyyyMMddHHmmsssss").format(new Date());
+        if (StringUtils.isEmpty(Head.msgId)) {
+            Head.msgId = new SimpleDateFormat("yyyyMMddHHmmsssss").format(new Date());
+        }
         Head.msgRef = Head.msgId;
         if ("".equals(Head.workDate)) {
             Head.workDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         }
+        Head.dataType = "2425";
 
         XmlFriendlyNameCoder replacer = new XmlFriendlyNameCoder("$", "_");
         HierarchicalStreamDriver hierarchicalStreamDriver = new XppDriver(replacer);

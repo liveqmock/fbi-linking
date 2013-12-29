@@ -31,11 +31,11 @@ public class Txn1534011Service {
                 " 明细数：" + toa.Body.Object.Record.Object.size());*/
         tia2402.Head.src = "CCB-370211";
         tia2402.Head.des = "CZ-370211";
-        new SyncSocketClient().onRequest(tia2402);
+        Toa toa = new SyncSocketClient().onRequest(tia2402);
 
         // TODO　业务逻辑
 
-        return null;
+        return toa;
     }
 
 }

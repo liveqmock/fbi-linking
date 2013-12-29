@@ -51,34 +51,34 @@ public class SyncSocketClient {
         is.read(lengthBytes);
         logger.info("待接收报文总长度：" + new String(lengthBytes));
         int toReadlength = Integer.parseInt(new String(lengthBytes)) - 8;
-        /*byte[] dataBytes = new byte[toReadlength];
-        int redlen = is.read(dataBytes);
-        logger.info(new String(dataBytes));
-
-        if (redlen != toReadlength) {
-
-            throw new RuntimeException("报文读取失败，仅读取长度：" + redlen + "/" + toReadlength);
-        }
-*/
 
         // TODO
 
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         byte[] dataBytes = new byte[toReadlength];
+        int redlen = is.read(dataBytes);
+
+        if (redlen != toReadlength) {
+            throw new RuntimeException("报文读取失败，仅读取长度：" + redlen + "/" + toReadlength);
+        }
+
+        /*byte[] dataBytes = new byte[toReadlength];
         byte[] bytes = new byte[256];
         int index = 0;
         int curlen = 0;
         while ((curlen = is.read(bytes)) == 256) {
             System.arraycopy(bytes, 0, dataBytes, index, curlen);
             index += curlen;
-            logger.info("本次报文[" + index + "] " + new String(bytes));
         }
         if (curlen > 0) {
-            logger.info("最后一包长度:" + curlen);
-            logger.info("本次报文[" + (curlen) + "] " + new String(bytes, 0,  curlen));
 
             System.arraycopy(bytes, 0, dataBytes, index, toReadlength - index);
-        }
+        }*/
         return CustomCodeHandler.decode(dataBytes);
 
     }

@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -27,16 +28,16 @@ public class Tia2457 extends Tia {
 
     public static class Body implements Serializable {
 
-        public Object Object = new Object();
+        public BodyObject Object = new BodyObject();
     }
 
-    public static class Object implements Serializable {
+    public static class BodyObject implements Serializable {
 
-        public Record Record = new Record();
+        public BodyRecord Record = new BodyRecord();
     }
 
 
-    public static class Record implements Serializable {
+    public static class BodyRecord implements Serializable {
 
         /*
         rg_code	区划码
@@ -74,7 +75,7 @@ remark	备注
         public String bill_money = "";
         public String set_year = "";
         public String bank_user = "";
-        public String Bank_no = "";
+        public String bank_no = "";
         public String payer = "";
         public String payerbank = "";
         public String payeraccount = "";
@@ -106,11 +107,14 @@ chargemoney	收入金额
     @Override
     public String toString() {
 
-        Head.msgId = new SimpleDateFormat("yyyyMMddHHmmsssss").format(new Date());
+        if (StringUtils.isEmpty(Head.msgId)) {
+            Head.msgId = new SimpleDateFormat("yyyyMMddHHmmsssss").format(new Date());
+        }
         Head.msgRef = Head.msgId;
         if ("".equals(Head.workDate)) {
             Head.workDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         }
+        Head.dataType = "2457";
 
         XmlFriendlyNameCoder replacer = new XmlFriendlyNameCoder("$", "_");
         HierarchicalStreamDriver hierarchicalStreamDriver = new XppDriver(replacer);

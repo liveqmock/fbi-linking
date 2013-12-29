@@ -1,10 +1,9 @@
 package apps.fiskfq.online.service;
 
 import apps.fiskfq.gateway.client.SyncSocketClient;
-import apps.fiskfq.gateway.domain.ToaXml;
 import apps.fiskfq.gateway.domain.base.Toa;
+import apps.fiskfq.gateway.domain.base.ToaXml;
 import apps.fiskfq.gateway.domain.txn.Tia2401;
-import apps.fiskfq.gateway.domain.txn.Toa1401;
 import apps.fiskfq.repository.MybatisManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +29,14 @@ public class Txn1534010Service {
                 " 缴款书ID：" + toa.Body.Object.Record.chr_id +
                 " 票号：" + toa.Body.Object.Record.bill_no +
                 " 明细数：" + toa.Body.Object.Record.Object.size());*/
+        // TODO 从数据库或配置文件读取以下字段值
         tia2401.Head.src = "CCB-370211";
         tia2401.Head.des = "CZ-370211";
         ToaXml toa = (ToaXml)new SyncSocketClient().onRequest(tia2401);
 
         // TODO　业务逻辑
 
-        return null;
+        return toa;
     }
 
 }

@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -25,12 +26,12 @@ public class Tia2402 extends Tia {
 
     public static class Body implements Serializable {
 
-        public Object Object = new Object();
+        public BodyObject Object = new BodyObject();
     }
 
-    public static class Object implements Serializable {
+    public static class BodyObject implements Serializable {
 
-        public Record Record = new Record();
+        public BodyRecord Record = new BodyRecord();
     }
 
 
@@ -51,7 +52,7 @@ route_user_code	路由用户编码
 license	授权序列号
 business_id	交易流水号
      */
-    public static class Record implements Serializable {
+    public static class BodyRecord implements Serializable {
 
         public String chr_id = "";
         public String billtype_code = "";
@@ -71,12 +72,15 @@ business_id	交易流水号
 
     @Override
     public String toString() {
+        if (StringUtils.isEmpty(Head.msgId)) {
+            Head.msgId = new SimpleDateFormat("yyyyMMddHHmmsssss").format(new Date());
+        }
 
-        Head.msgId = new SimpleDateFormat("yyyyMMddHHmmsssss").format(new Date());
         Head.msgRef = Head.msgId;
         if ("".equals(Head.workDate)) {
             Head.workDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         }
+        Head.dataType = "2402";
 
         XmlFriendlyNameCoder replacer = new XmlFriendlyNameCoder("$", "_");
         HierarchicalStreamDriver hierarchicalStreamDriver = new XppDriver(replacer);
