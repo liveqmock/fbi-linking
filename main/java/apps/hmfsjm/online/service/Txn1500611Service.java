@@ -47,8 +47,9 @@ public class Txn1500611Service {
         bill.setOperId(tellerID);
         bill.setDeptId(branchID);
         bill.setStsFlag(BillStsFlag.BOOKED.getCode());
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = null;
         try {
+            session = manager.getSessionFactory().openSession();
             HmfsJmBillMapper mapper = session.getMapper(HmfsJmBillMapper.class);
             mapper.updateByPrimaryKey(bill);
             HmfsJmActMapper actMapper = session.getMapper(HmfsJmActMapper.class);

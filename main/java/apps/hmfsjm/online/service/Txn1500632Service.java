@@ -22,24 +22,29 @@ public class Txn1500632Service {
 
     public String process(String date8, String billNo) {
 
-        SqlSession session = manager.getSessionFactory().openSession();
-        CommonMapper mapper = session.getMapper(CommonMapper.class);
-        String useCnt = mapper.qryVchCnt(date8, VoucherStatus.USED.getCode());
-        String delCnt = mapper.qryVchCnt(date8, VoucherStatus.CANCEL.getCode());
-        if (StringUtils.isEmpty(billNo)) {
-            List<VoucherBill> vchList = mapper.qryVoucherBills(date8);
-            String vchs = transVchsToStr(vchList);
-            if (StringUtils.isEmpty(vchs)) {
-                return vchs;
-            } else
-                return useCnt + "|" + delCnt + "|" + vchs;
-        } else {
-            List<VoucherBill> vchList = mapper.qryVoucher(billNo);
-            if (vchList == null || vchList.isEmpty()) {
-                return null;
+        SqlSession session = null;
+        try {
+            session = manager.getSessionFactory().openSession();
+            CommonMapper mapper = session.getMapper(CommonMapper.class);
+            String useCnt = mapper.qryVchCnt(date8, VoucherStatus.USED.getCode());
+            String delCnt = mapper.qryVchCnt(date8, VoucherStatus.CANCEL.getCode());
+            if (StringUtils.isEmpty(billNo)) {
+                List<VoucherBill> vchList = mapper.qryVoucherBills(date8);
+                String vchs = transVchsToStr(vchList);
+                if (StringUtils.isEmpty(vchs)) {
+                    return vchs;
+                } else
+                    return useCnt + "|" + delCnt + "|" + vchs;
             } else {
-                return useCnt + "|" + delCnt + "|" + transVchsToStr(vchList);
+                List<VoucherBill> vchList = mapper.qryVoucher(billNo);
+                if (vchList == null || vchList.isEmpty()) {
+                    return null;
+                } else {
+                    return useCnt + "|" + delCnt + "|" + transVchsToStr(vchList);
+                }
             }
+        } finally {
+            if (session != null) session.close();
         }
     }
 

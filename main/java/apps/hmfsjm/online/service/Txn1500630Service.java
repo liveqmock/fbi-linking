@@ -31,8 +31,9 @@ public class Txn1500630Service {
 
     public boolean process(String branchID, String tellerID, long startNo, long endNo) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = null;
         try {
+            session = manager.getSessionFactory().openSession();
             HmfsJmVoucherMapper vchMapper = session.getMapper(HmfsJmVoucherMapper.class);
             HmfsJmVoucherExample example = new HmfsJmVoucherExample();
             long cnt = 0;

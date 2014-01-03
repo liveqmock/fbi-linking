@@ -46,8 +46,9 @@ public class Txn1500621Service {
         refund.setOperId(tellerID);
         refund.setDeptId(branchID);
         refund.setStsFlag(BillStsFlag.BOOKED.getCode());
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = null;
         try {
+            session = manager.getSessionFactory().openSession();
             HmfsJmRefundMapper refundMapper = session.getMapper(HmfsJmRefundMapper.class);
             refundMapper.updateByPrimaryKey(refund);
             HmfsJmActMapper actMapper = session.getMapper(HmfsJmActMapper.class);

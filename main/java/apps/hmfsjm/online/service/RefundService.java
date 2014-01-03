@@ -21,19 +21,27 @@ public class RefundService {
 
     // 按单号查询退款单
     public HmfsJmRefund qryRefundByNo(String refundNo) {
-        SqlSession session = manager.getSessionFactory().openSession();
-        HmfsJmRefundMapper mapper = session.getMapper(HmfsJmRefundMapper.class);
-        HmfsJmRefundExample example = new HmfsJmRefundExample();
-        example.createCriteria().andBillnoEqualTo(refundNo);
-        List<HmfsJmRefund> refunds = mapper.selectByExample(example);
-        session.close();
-        return (refunds.size() > 0) ? refunds.get(0) : null;
+        SqlSession session = null;
+
+        try {
+            session = manager.getSessionFactory().openSession();
+
+            HmfsJmRefundMapper mapper = session.getMapper(HmfsJmRefundMapper.class);
+            HmfsJmRefundExample example = new HmfsJmRefundExample();
+            example.createCriteria().andBillnoEqualTo(refundNo);
+            List<HmfsJmRefund> refunds = mapper.selectByExample(example);
+            return (refunds.size() > 0) ? refunds.get(0) : null;
+        } finally {
+            if (session != null) session.close();
+        }
     }
 
     // 保存缴款单，已存在则更新
     public boolean saveRefundBill(HmfsJmRefund refund) throws IllegalAccessException {
         if (RefundQryStatus.VALAID.getCode().equals(refund.getBillStsCode())) {
-            SqlSession session = manager.getSessionFactory().openSession();
+            SqlSession session = null;
+            try {
+            session = manager.getSessionFactory().openSession();
             HmfsJmRefundMapper mapper = session.getMapper(HmfsJmRefundMapper.class);
             HmfsJmRefundExample example = new HmfsJmRefundExample();
             example.createCriteria().andBillnoEqualTo(refund.getBillno());
@@ -47,13 +55,14 @@ public class RefundService {
                 origRefund.setPkid(pkid);
                 cnt = mapper.updateByPrimaryKey(origRefund);
                 session.commit();
-                session.close();
                 return cnt == 1;
             } else {
                 cnt = mapper.insert(refund);
                 session.commit();
-                session.close();
                 return cnt == 1;
+            }
+            } finally {
+                if (session != null) session.close();
             }
         } else {
             throw new RuntimeException("状态：" + refund.getBillStsCode() + refund.getBillStsTitle());
